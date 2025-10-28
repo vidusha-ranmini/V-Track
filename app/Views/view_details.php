@@ -100,6 +100,11 @@
                 width: 95%;
                 margin: 0 16px;
                 box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+                /* Allow the edit modal to scroll when content is tall */
+                max-height: 90vh;
+                overflow-y: auto;
+                box-sizing: border-box;
+                position: relative;
             }
             /* Details modal card styling: white background, rounded, smaller width */
             #details-modal .modal-content {
@@ -332,8 +337,14 @@
                             <select name="disabled" style="width:100%"><option value="no">No</option><option value="yes">Yes</option></select>
                         </div>
                         <div style="flex:1;min-width:140px;">
-                            <label>Offers (comma separated)</label>
-                            <input name="offers" type="text" style="width:100%" placeholder="aswasuma,adult">
+                            <label>Offers</label>
+                            <select name="offers[]" multiple style="width:100%;height:110px;">
+                                <option value="aswasuma">Aswasuma</option>
+                                <option value="adult">Adult Offers</option>
+                                <option value="mahapola">Mahapola</option>
+                                <option value="grade5">Grade 5 Scholarship</option>
+                            </select>
+                            <small style="color:#666">Hold Ctrl (Windows) or Cmd (Mac) to select multiple offers.</small>
                         </div>
                     </div>
 
@@ -574,8 +585,25 @@
         form.university_name.value = member.university_name || '';
         form.land_house_status.value = member.land_house_status || '';
         form.disabled.value = member.disabled || 'no';
-        // offers may be array
-        form.offers.value = Array.isArray(member.offers) ? member.offers.join(',') : (member.offers || '');
+        // offers may be array — set multi-select options if present
+        try {
+            var offersSelect = form.querySelector('[name="offers[]"]');
+            if (offersSelect) {
+                // clear selections
+                Array.from(offersSelect.options).forEach(function(o){ o.selected = false; });
+                if (Array.isArray(member.offers)) {
+                    member.offers.forEach(function(v){
+                        var opt = offersSelect.querySelector('option[value="' + v + '"]');
+                        if (opt) opt.selected = true;
+                    });
+                } else if (typeof member.offers === 'string' && member.offers.length) {
+                    member.offers.split(',').map(function(s){ return s.trim(); }).forEach(function(v){
+                        var opt = offersSelect.querySelector('option[value="' + v + '"]');
+                        if (opt) opt.selected = true;
+                    });
+                }
+            }
+        } catch(e) {}
         // set current cv filename so backend can receive it as text (server currently reads cv from POST)
         form.cv.value = member.cv || '';
         document.getElementById('current-cv').textContent = member.cv ? member.cv : 'No file attached';
