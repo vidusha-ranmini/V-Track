@@ -43,7 +43,12 @@
 <body>
     <div class="login-container">
         <div class="login-title">Login to V-Track</div>
-    <form class="login-form" method="post" action="<?= base_url('login') ?>">
+        <?php if (isset($error)): ?>
+            <div style="color: red; margin-bottom: 16px; font-weight: 500;">
+                <?= esc($error) ?>
+            </div>
+        <?php endif; ?>
+        <form class="login-form" method="post" action="<?= base_url('login') ?>">
             <input type="text" name="username" placeholder="Username" required>
             <input type="password" name="password" placeholder="Password" required>
             <button type="submit" class="login-btn">Login</button>

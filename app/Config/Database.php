@@ -26,23 +26,28 @@ class Database extends Config
      */
 // ],
     public array $default = [
-        'DSN'      => 'sqlite:' . WRITEPATH . 'database/v-track.db', // Path to your SQLite file
-        'hostname' => '',
-        'username' => '',
-        'password' => '',
-        'database' => 'v-track.db',
-        'DBDriver' => 'SQLite3', // Set the driver to SQLite3
-        'DBPrefix' => '',
-        'pConnect' => false,
-        'DBDebug'  => true,
-        'charset'  => 'utf8',
-        'DBCollat' => 'utf8_general_ci',
-        'swapPre'  => '',
-        'encrypt'  => false,
-        'compress' => false,
-        'strictOn' => false,
-        'failover' => [],
-        'port'     => 3306,
+        'DSN'        => 'sqlite:' . WRITEPATH . 'database' . DIRECTORY_SEPARATOR . 'v-track.db', // Path to your SQLite file
+        'hostname'   => '',
+        'username'   => '',
+        'password'   => '',
+        // Use the absolute writable path so SQLite opens the correct file
+        'database'   => WRITEPATH . 'database' . DIRECTORY_SEPARATOR . 'v-track.db',
+        'DBDriver'   => 'SQLite3', // Set the driver to SQLite3
+        'DBPrefix'   => '',
+        'pConnect'   => false,
+        'DBDebug'    => true,
+        'charset'    => 'utf8',
+        'DBCollat'   => 'utf8_general_ci',
+        'swapPre'    => '',
+        'encrypt'    => false,
+        'compress'   => false,
+        'strictOn'   => false,
+        'failover'   => [],
+        'port'       => 3306,
+        // SQLite specific options
+        'foreignKeys' => true,
+        // Increase busy timeout (milliseconds) so writers wait instead of failing when DB is locked
+        'busyTimeout' => 2000,
     ];
     //    /**
     //     * Sample database connection for SQLite3.
