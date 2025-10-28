@@ -129,6 +129,16 @@
                 border-radius: 6px;
             }
             .modal-close-top:hover { background: rgba(0,0,0,0.06); }
+            /* Delete modal content styling (white card) */
+            #delete-modal .modal-content {
+                background: #fff;
+                padding: 18px;
+                border-radius: 10px;
+                box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+                max-width: 420px;
+                width: 92%;
+                margin: 0 12px;
+            }
         #edit-form label { display:block; margin-bottom:6px; font-weight:600; }
         #edit-form input[type="text"], #edit-form input[type="number"], #edit-form select {
             width:100%; padding:8px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;
@@ -241,7 +251,7 @@
                         </div>
                         <div style="flex:1;min-width:140px;">
                             <label>Gender</label>
-                            <select name="gender" style="width:100%"><option value="">Select</option><option value="male">Male</option><option value="female">Female</option><option value="other">Other</option></select>
+                            <select name="gender" style="width:100%"><option value="" disabled>Select</option><option value="male">Male</option><option value="female">Female</option></select>
                         </div>
                         <div style="flex:1;min-width:120px;">
                             <label>Age</label>
@@ -350,6 +360,17 @@
         </div>
     </div>
     </div>
+    <!-- Delete confirmation modal -->
+    <div id="delete-modal" style="display:none;position:fixed;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.45);align-items:center;justify-content:center;z-index:1250;">
+        <div class="modal-content" style="max-width:420px;margin:auto;padding:18px;">
+            <h3 style="margin-top:0;color:#c62828;">Confirm Delete</h3>
+            <p id="delete-modal-msg" style="color:#333;margin-bottom:18px;">Are you sure you want to delete this member? This action cannot be undone.</p>
+            <div style="display:flex;gap:8px;justify-content:flex-end;">
+                <button id="delete-cancel" class="quick-action-btn cancel small">Cancel</button>
+                <button id="delete-confirm" class="quick-action-btn danger small">Delete</button>
+            </div>
+        </div>
+    </div>
     <!-- Toast container -->
     <div id="toast-container" aria-live="polite" style="position:fixed;right:18px;bottom:18px;z-index:2000;pointer-events:none;"></div>
     <script>
@@ -441,7 +462,7 @@
             <div style="margin-bottom:12px;"><strong>Occupation:</strong> ${capitalize(member.occupation)}${member.occupation === 'other' && member.occupation_other ? ' (' + member.occupation_other + ')' : ''}</div>
             <div style="margin-bottom:12px;"><strong>School / Grade:</strong> ${member.school ? member.school + (member.grade ? ' / ' + member.grade : '') : (member.university_name ? member.university_name : '—')}</div>
             <div style="margin-bottom:12px;"><strong>Land/House Status:</strong> ${member.land_house_status ? capitalize(member.land_house_status) : '—'}</div>
-            <div style="margin-bottom:12px;"><strong>Exit Date:</strong> ${member.exit_date ? member.exit_date : '—'}</div>
+           
             <div style="margin-bottom:12px;"><strong>Offers:</strong> ${member.offers.map(capitalizeOffer).join(', ')}</div>
             <div style="margin-bottom:12px;"><strong>NIC:</strong> ${member.nic}</div>
             <div style="margin-bottom:12px;"><strong>WhatsApp:</strong> ${member.whatsapp}</div>
@@ -476,11 +497,8 @@
             openEditModal(member);
         });
         delBtn.addEventListener('click', function() {
-            if (!confirm('Delete this member? This action cannot be undone.')) return;
-            fetch('<?= base_url('member/delete') ?>/' + member.id, { method: 'POST' })
-                .then(r => { if (!r.ok) throw new Error('Delete failed'); return r.json(); })
-                .then(j => { modal.classList.remove('show'); showToast('success', 'Member deleted'); setTimeout(()=>location.reload(),800); })
-                .catch(err => { showToast('error', 'Delete failed'); console.error(err); });
+            // Open custom delete confirmation modal
+            openDeleteModal(member);
         });
 
         // Show modal
@@ -493,6 +511,49 @@
         }
     }
 
+    // Delete modal helpers
+    function openDeleteModal(member) {
+        var dmodal = document.getElementById('delete-modal');
+        var msg = document.getElementById('delete-modal-msg');
+        var confirmBtn = document.getElementById('delete-confirm');
+        var cancelBtn = document.getElementById('delete-cancel');
+        if (!dmodal || !msg || !confirmBtn || !cancelBtn) return;
+        msg.textContent = `Delete member "${member.name}"? This action cannot be undone.`;
+        dmodal.style.display = 'flex';
+
+        function cleanup() {
+            dmodal.style.display = 'none';
+            confirmBtn.onclick = null;
+            cancelBtn.onclick = null;
+        }
+
+        cancelBtn.onclick = function() { cleanup(); };
+        confirmBtn.onclick = function() {
+            // perform deletion
+            confirmBtn.disabled = true; cancelBtn.disabled = true;
+            fetch('<?= base_url('member/delete') ?>/' + member.id, { method: 'POST', credentials: 'same-origin', headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(response => {
+                    if (!response.ok) throw response;
+                    return response.json().catch(()=>({ success: true }));
+                })
+                .then(json => {
+                    cleanup();
+                    showToast('success', 'Member deleted');
+                    setTimeout(()=>location.reload(),700);
+                })
+                .catch(err => {
+                    cleanup();
+                    // Prefer server-friendly message if provided, but never leak host/stack traces
+                    if (err && err.json) {
+                        err.json().then(j => { showToast('error', j.message || 'Delete failed'); }).catch(()=>{ showToast('error', 'Delete failed'); });
+                    } else {
+                        showToast('error', 'Delete failed');
+                    }
+                    console.error('Delete error (see server logs):', err);
+                });
+        };
+    }
+
     function openEditModal(member) {
         var modal = document.getElementById('edit-modal');
         var form = document.getElementById('edit-form');
@@ -501,7 +562,9 @@
         form.name_with_initial.value = member.name_with_initial || '';
         form.member_type.value = member.member_type || '';
         form.nic.value = member.nic || '';
-        form.gender.value = member.gender || '';
+    // Ensure gender is one of allowed values ('male'|'female'). Default to 'male' when missing/invalid.
+    var g = (member.gender && (member.gender === 'male' || member.gender === 'female')) ? member.gender : 'male';
+    form.gender.value = g;
         form.age.value = member.age || '';
         form.occupation.value = member.occupation || '';
         form.occupation_other.value = member.occupation_other || '';
@@ -549,6 +612,11 @@
     document.getElementById('edit-form').addEventListener('submit', function(evt) {
         evt.preventDefault();
     var form = evt.target;
+    // Ensure gender is set and normalized before creating FormData to satisfy DB CHECK constraint
+    if (!form.gender.value || (form.gender.value !== 'male' && form.gender.value !== 'female')) {
+        form.gender.value = 'male';
+    }
+    form.gender.value = form.gender.value.toLowerCase();
     var fd = new FormData(form);
     // include file if provided (cv_file)
     // send as multipart/form-data

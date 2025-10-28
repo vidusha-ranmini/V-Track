@@ -88,6 +88,14 @@
             // Add active to clicked link
             el.classList.add('active');
         }
+        function logoutAndRedirect() {
+            var logoutUrl = '<?= base_url('logout') ?>';
+            var landing = '<?= base_url() ?>';
+            // Try to call logout endpoint then redirect to landing page
+            fetch(logoutUrl, { method: 'GET', credentials: 'same-origin', headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(function() { window.top.location.href = landing; })
+                .catch(function() { window.top.location.href = landing; });
+        }
     </script>
 </head>
 <body>
@@ -101,7 +109,7 @@
             </ul>
 
             <div class="sidebar-bottom">
-                <a href="#" class="sidebar-link" onclick="window.top.location.href='<?= base_url('logout') ?>'; return false;"><span class="sidebar-icon"><i class="fas fa-sign-out-alt"></i></span>Logout</a>
+                <a href="#" class="sidebar-link" onclick="logoutAndRedirect(); return false;"><span class="sidebar-icon"><i class="fas fa-sign-out-alt"></i></span>Logout</a>
             </div>
         </nav>
         <main class="main-content">
