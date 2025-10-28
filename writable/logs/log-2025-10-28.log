@@ -122,3 +122,76 @@ WARNING - 2025-10-28 04:00:47 --> [DEPRECATED] fputcsv(): the $escape parameter 
  5 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
  6 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
  7 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2025-10-28 04:13:41 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-10-28 04:14:24 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-10-28 04:18:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-10-28 04:20:05 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-10-28 04:20:05 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-10-28 04:20:17 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-10-28 04:24:19 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-10-28 04:26:25 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+ERROR - 2025-10-28 04:27:22 --> SQLite3Exception: NOT NULL constraint failed: members.nic in C:\xampp\htdocs\V-Track\system\Database\SQLite3\Connection.php:175
+Stack trace:
+#0 C:\xampp\htdocs\V-Track\system\Database\SQLite3\Connection.php(175): SQLite3->exec('INSERT INTO `me...')
+#1 C:\xampp\htdocs\V-Track\system\Database\BaseConnection.php(729): CodeIgniter\Database\SQLite3\Connection->execute('INSERT INTO `me...')
+#2 C:\xampp\htdocs\V-Track\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `me...')
+#3 C:\xampp\htdocs\V-Track\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `me...', Array, false)
+#4 C:\xampp\htdocs\V-Track\system\Model.php(394): CodeIgniter\Database\BaseBuilder->insert()
+#5 C:\xampp\htdocs\V-Track\system\BaseModel.php(838): CodeIgniter\Model->doInsert(Array)
+#6 C:\xampp\htdocs\V-Track\system\Model.php(797): CodeIgniter\BaseModel->insert(Array, true)
+#7 C:\xampp\htdocs\V-Track\app\Controllers\Details.php(118): CodeIgniter\Model->insert(Array)
+#8 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(933): App\Controllers\Details->store()
+#9 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Details))
+#10 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#11 C:\xampp\htdocs\V-Track\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#12 C:\xampp\htdocs\V-Track\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#13 C:\xampp\htdocs\V-Track\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#14 {main}
+CRITICAL - 2025-10-28 04:27:22 --> CodeIgniter\Database\Exceptions\DatabaseException: NOT NULL constraint failed: members.nic
+[Method: POST, Route: add-details]
+in SYSTEMPATH\Database\BaseConnection.php on line 684.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `members` (`home_id`, `full_name`, `name_with_initial`, `member_type`, `nic`, `gender`, `occupation`, `occupation_other`, `school`, `grade`, `university_name`, `age`, `disabled`, `land_house_status`, `whatsapp`, `cv`) VALUES (:home_id:, :full_name:, :name_with_initial:, :member_type:, :nic:, :gender:, :occupation:, :occupation_other:, :school:, :grade:, :university_name:, :age:, :disabled:, :land_house_status:, :whatsapp:, :cv:)', [...], false)
+ 2 SYSTEMPATH\Model.php(394): CodeIgniter\Database\BaseBuilder->insert()
+ 3 SYSTEMPATH\BaseModel.php(838): CodeIgniter\Model->doInsert([...])
+ 4 SYSTEMPATH\Model.php(797): CodeIgniter\BaseModel->insert([...], true)
+ 5 APPPATH\Controllers\Details.php(118): CodeIgniter\Model->insert([...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Details->store()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Details))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-28 04:27:22 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: NOT NULL constraint failed: members.nic
+in SYSTEMPATH\Database\SQLite3\Connection.php on line 181.
+ 1 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\SQLite3\Connection->execute('INSERT INTO `members` (`home_id`, `full_name`, `name_with_initial`, `member_type`, `nic`, `gender`, `occupation`, `occupation_other`, `school`, `grade`, `university_name`, `age`, `disabled`, `land_house_status`, `whatsapp`, `cv`) VALUES (2, \'Hapu Arachchige Senethi Sanodya\', \'H.A.S.Sanodya\', \'permanent\', NULL, \'female\', \'student\', \'\', \'Jayakodi Maha Vidyalaya\', \'3\', \'\', 8, \'no\', \'plot\', \'\', NULL)')
+ 2 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `members` (`home_id`, `full_name`, `name_with_initial`, `member_type`, `nic`, `gender`, `occupation`, `occupation_other`, `school`, `grade`, `university_name`, `age`, `disabled`, `land_house_status`, `whatsapp`, `cv`) VALUES (2, \'Hapu Arachchige Senethi Sanodya\', \'H.A.S.Sanodya\', \'permanent\', NULL, \'female\', \'student\', \'\', \'Jayakodi Maha Vidyalaya\', \'3\', \'\', 8, \'no\', \'plot\', \'\', NULL)')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `members` (`home_id`, `full_name`, `name_with_initial`, `member_type`, `nic`, `gender`, `occupation`, `occupation_other`, `school`, `grade`, `university_name`, `age`, `disabled`, `land_house_status`, `whatsapp`, `cv`) VALUES (:home_id:, :full_name:, :name_with_initial:, :member_type:, :nic:, :gender:, :occupation:, :occupation_other:, :school:, :grade:, :university_name:, :age:, :disabled:, :land_house_status:, :whatsapp:, :cv:)', [...], false)
+ 4 SYSTEMPATH\Model.php(394): CodeIgniter\Database\BaseBuilder->insert()
+ 5 SYSTEMPATH\BaseModel.php(838): CodeIgniter\Model->doInsert([...])
+ 6 SYSTEMPATH\Model.php(797): CodeIgniter\BaseModel->insert([...], true)
+ 7 APPPATH\Controllers\Details.php(118): CodeIgniter\Model->insert([...])
+ 8 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Details->store()
+ 9 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Details))
+10 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+11 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+12 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+13 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2025-10-28 04:27:22 --> [Caused by] SQLite3Exception: NOT NULL constraint failed: members.nic
+in SYSTEMPATH\Database\SQLite3\Connection.php on line 175.
+ 1 SYSTEMPATH\Database\SQLite3\Connection.php(175): SQLite3->exec('INSERT INTO `members` (`home_id`, `full_name`, `name_with_initial`, `member_type`, `nic`, `gender`, `occupation`, `occupation_other`, `school`, `grade`, `university_name`, `age`, `disabled`, `land_house_status`, `whatsapp`, `cv`) VALUES (2, \'Hapu Arachchige Senethi Sanodya\', \'H.A.S.Sanodya\', \'permanent\', NULL, \'female\', \'student\', \'\', \'Jayakodi Maha Vidyalaya\', \'3\', \'\', 8, \'no\', \'plot\', \'\', NULL)')
+ 2 SYSTEMPATH\Database\BaseConnection.php(729): CodeIgniter\Database\SQLite3\Connection->execute('INSERT INTO `members` (`home_id`, `full_name`, `name_with_initial`, `member_type`, `nic`, `gender`, `occupation`, `occupation_other`, `school`, `grade`, `university_name`, `age`, `disabled`, `land_house_status`, `whatsapp`, `cv`) VALUES (2, \'Hapu Arachchige Senethi Sanodya\', \'H.A.S.Sanodya\', \'permanent\', NULL, \'female\', \'student\', \'\', \'Jayakodi Maha Vidyalaya\', \'3\', \'\', 8, \'no\', \'plot\', \'\', NULL)')
+ 3 SYSTEMPATH\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `members` (`home_id`, `full_name`, `name_with_initial`, `member_type`, `nic`, `gender`, `occupation`, `occupation_other`, `school`, `grade`, `university_name`, `age`, `disabled`, `land_house_status`, `whatsapp`, `cv`) VALUES (2, \'Hapu Arachchige Senethi Sanodya\', \'H.A.S.Sanodya\', \'permanent\', NULL, \'female\', \'student\', \'\', \'Jayakodi Maha Vidyalaya\', \'3\', \'\', 8, \'no\', \'plot\', \'\', NULL)')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `members` (`home_id`, `full_name`, `name_with_initial`, `member_type`, `nic`, `gender`, `occupation`, `occupation_other`, `school`, `grade`, `university_name`, `age`, `disabled`, `land_house_status`, `whatsapp`, `cv`) VALUES (:home_id:, :full_name:, :name_with_initial:, :member_type:, :nic:, :gender:, :occupation:, :occupation_other:, :school:, :grade:, :university_name:, :age:, :disabled:, :land_house_status:, :whatsapp:, :cv:)', [...], false)
+ 5 SYSTEMPATH\Model.php(394): CodeIgniter\Database\BaseBuilder->insert()
+ 6 SYSTEMPATH\BaseModel.php(838): CodeIgniter\Model->doInsert([...])
+ 7 SYSTEMPATH\Model.php(797): CodeIgniter\BaseModel->insert([...], true)
+ 8 APPPATH\Controllers\Details.php(118): CodeIgniter\Model->insert([...])
+ 9 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Details->store()
+10 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Details))
+11 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+12 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+13 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+14 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+DEBUG - 2025-10-28 04:27:28 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-10-28 04:29:37 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-10-28 04:30:36 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.

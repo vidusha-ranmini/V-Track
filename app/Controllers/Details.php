@@ -19,7 +19,11 @@ class Details extends Controller
         $homeModel = new HomeModel();
         $memberModel = new MemberModel();
 
-        // Basic home data
+        // Determine whether we're adding to an existing home or creating a new one
+        $addToExisting = $this->request->getPost('add_to_existing') === '1' ? true : false;
+        $existingHomeNumber = $this->request->getPost('existing_home_number_hidden');
+
+        // Basic home data (for new home case)
         $data = [
             'home_number'    => $this->request->getPost('home_number'),
             'address'        => $this->request->getPost('address'),
@@ -30,15 +34,26 @@ class Details extends Controller
             'waste_disposal' => $this->request->getPost('waste_disposal'),
         ];
 
-        // Simple validation
-        if (empty($data['home_number']) || empty($data['address'])) {
-            return redirect()->back()->with('error', 'Home number and address are required.');
+        // If adding to an existing home, validate the provided existing home number and find the home
+        if ($addToExisting) {
+            if (empty($existingHomeNumber)) {
+                return redirect()->back()->with('error', 'Existing house number is required when adding to an existing home.');
+            }
+            $existingHome = $homeModel->where('home_number', $existingHomeNumber)->first();
+            if (!$existingHome) {
+                return redirect()->back()->with('error', 'No home found with that house number.');
+            }
+            $homeId = $existingHome['id'];
+        } else {
+            // New home flow: require home_number and address
+            if (empty($data['home_number']) || empty($data['address'])) {
+                return redirect()->back()->with('error', 'Home number and address are required.');
+            }
+            // Use transaction to ensure atomicity
+            $db->transStart();
+            $homeId = $homeModel->insert($data);
+            // we will continue the transaction below for members
         }
-
-        // Use transaction to ensure atomicity
-        $db->transStart();
-
-        $homeId = $homeModel->insert($data);
 
         // Members come from hidden members_json field
         $membersJson = $this->request->getPost('members_json');
@@ -64,13 +79,14 @@ class Details extends Controller
             mkdir($uploadPath, 0755, true);
         }
 
-        foreach ($members as $idx => $m) {
+    foreach ($members as $idx => $m) {
             $member = [
                 'home_id' => $homeId,
                 'full_name' => $m['full_name'] ?? null,
                 'name_with_initial' => $m['name_with_initial'] ?? null,
                 'member_type' => $m['member_type'] ?? null,
-                'nic' => $m['nic'] ?? null,
+                // NIC is optional
+                'nic' => isset($m['nic']) && $m['nic'] !== '' ? $m['nic'] : null,
                 'gender' => $m['gender'] ?? null,
                 'occupation' => $m['occupation'] ?? null,
                 'occupation_other' => $m['occupation_other'] ?? null,
@@ -120,10 +136,22 @@ class Details extends Controller
             }
         }
 
-        $db->transComplete();
-
-        if ($db->transStatus() === false) {
-            return redirect()->back()->with('error', 'Failed to save details.');
+        // If we were adding to an existing home, update that home's member count (optional)
+        if ($addToExisting) {
+            try {
+                $added = count($members);
+                if ($added > 0) {
+                    $homeModel->set('no_of_members', "no_of_members + $added", false)->where('id', $homeId)->update();
+                }
+            } catch (\Exception $e) {
+                log_message('error', 'Failed to update existing home member count: ' . $e->getMessage());
+            }
+        } else {
+            // complete the transaction started for new-home flow
+            $db->transComplete();
+            if ($db->transStatus() === false) {
+                return redirect()->back()->with('error', 'Failed to save details.');
+            }
         }
 
         return redirect()->to('/view-details')->with('success', 'Details saved successfully.');

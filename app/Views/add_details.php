@@ -110,13 +110,42 @@
         if (!form) return;
         var addBtn = form.querySelector('button.add-member-btn[type="button"]');
         var memberList = form.querySelector('.member-list');
-        var members = [];
+    var members = [];
     var cvFilesContainer = document.createElement('div');
     cvFilesContainer.style.display = 'none';
     cvFilesContainer.id = 'cv-files-container';
     form.appendChild(cvFilesContainer);
     // Keep track of hidden file inputs we create so they stay in sync with `members` array
     var cvInputs = [];
+
+    // Ensure the hidden file inputs are ordered and named to match members[] indexes.
+    // This avoids the common issue where files are submitted in DOM order and no longer
+    // line up with the members JSON when members are added/removed/edited.
+    function resyncCvInputs() {
+        // Build a map of existing inputs by their dataset.idx (if present)
+        var existing = {};
+        Array.from(cvFilesContainer.querySelectorAll('input[type=file]')).forEach(function(inp) {
+            var di = parseInt(inp.dataset.idx, 10);
+            if (!isNaN(di)) existing[di] = inp;
+        });
+
+        // Clear container and rebuild in correct order
+        cvFilesContainer.innerHTML = '';
+        var newCv = [];
+        for (var i = 0; i < members.length; i++) {
+            if (existing.hasOwnProperty(i)) {
+                var inp = existing[i];
+                inp.name = 'cv_files[' + i + ']';
+                inp.dataset.idx = i;
+                cvFilesContainer.appendChild(inp);
+                newCv.push(inp);
+            } else {
+                // No file was provided for this member; skip creating an empty file input.
+                // Server will treat missing entries as no-file for that member.
+            }
+        }
+        cvInputs = newCv;
+    }
         var editIndex = null;
         var submitBtn = form.querySelector('button[type="submit"]');
     var messageDiv = document.createElement('div');
@@ -176,6 +205,23 @@
             document.getElementById('university-fields').style.display = 'none';
             document.getElementById('occupation-other-group').style.display = 'none';
         }
+
+        // Home mode toggle: new vs add to existing
+        var homeModeRadios = form.querySelectorAll('[name="home_mode"]');
+        var existingHomeInputWrap = document.getElementById('existing-home-input');
+        function updateHomeMode() {
+            var mode = form.querySelector('[name="home_mode"]:checked').value;
+            var isExisting = (mode === 'existing');
+            // disable/enable home detail inputs when adding to existing
+            ['home_number','address','no_of_members','has_assessment','assessment_number','resident_type','waste_disposal'].forEach(function(n){
+                var el = form.querySelector('[name="'+n+'"]');
+                if (!el) return;
+                el.disabled = isExisting;
+            });
+            existingHomeInputWrap.style.display = isExisting ? 'block' : 'none';
+        }
+        homeModeRadios.forEach(function(r){ r.addEventListener('change', updateHomeMode); });
+        updateHomeMode();
 
         function computeBirthYearFromNIC(nic) {
             if (!nic) return null;
@@ -239,11 +285,12 @@
             // Decide target index for this member
             var targetIdx = (editIndex !== null) ? editIndex : members.length;
 
-            if (file) {
+                if (file) {
                 // Create or replace the hidden file input for this index
                 var newInput = document.createElement('input');
                 newInput.type = 'file';
-                newInput.name = 'cv_files[]';
+                    // name will be fixed by resyncCvInputs() to cv_files[<index>]
+                    newInput.name = 'cv_files[' + targetIdx + ']';
                 newInput.dataset.idx = targetIdx;
                 // Use DataTransfer where supported
                 try {
@@ -256,12 +303,13 @@
 
                 // If editing and an existing hidden input exists for this index, replace it
                 if (editIndex !== null && cvInputs[targetIdx]) {
-                    try { cvFilesContainer.replaceChild(newInput, cvInputs[targetIdx]); } catch (e) { cvFilesContainer.appendChild(newInput); }
-                    cvInputs[targetIdx] = newInput;
+                        try { cvFilesContainer.replaceChild(newInput, cvInputs[targetIdx]); } catch (e) { cvFilesContainer.appendChild(newInput); }
+                        cvInputs[targetIdx] = newInput;
                 } else {
                     // Append at the end; we'll keep arrays aligned below
-                    cvFilesContainer.appendChild(newInput);
-                    cvInputs.splice(targetIdx, 0, newInput);
+                        cvFilesContainer.appendChild(newInput);
+                        // ensure cvInputs contains the new input in the right place after resync
+                        cvInputs.splice(targetIdx, 0, newInput);
                 }
 
                 memberFields.cv = file.name;
@@ -284,15 +332,8 @@
             // Re-sync data-idx attributes and compact cvInputs if necessary
             // Remove any extra inputs (happens when editing without file selection)
             // Ensure cvInputs length equals members length
-            if (cvInputs.length > members.length) {
-                // remove trailing inputs
-                for (var r = cvInputs.length - 1; r >= members.length; r--) {
-                    try { cvFilesContainer.removeChild(cvInputs[r]); } catch (e) {}
-                    cvInputs.splice(r, 1);
-                }
-            }
-            // Re-index remaining inputs
-            cvInputs.forEach(function(inp, i) { inp.dataset.idx = i; });
+            // Re-sync hidden file inputs so DOM order and input names match members indexes
+            resyncCvInputs();
             renderMembers();
             clearMemberFields();
             messageDiv.textContent = '';
@@ -335,8 +376,8 @@
                     try { cvFilesContainer.removeChild(cvInputs[idx]); } catch (e) {}
                     cvInputs.splice(idx, 1);
                 }
-                // Re-index remaining hidden inputs
-                cvInputs.forEach(function(inp, i) { inp.dataset.idx = i; });
+                // Re-sync hidden inputs after deletion so names/indexes align
+                resyncCvInputs();
                 renderMembers();
             }
         });
@@ -365,6 +406,32 @@
 
             // attach members JSON to hidden input
             hiddenMembers.value = JSON.stringify(members);
+            // include home mode info so server can decide whether to create a new home or add members to an existing one
+            var mode = form.querySelector('[name="home_mode"]:checked').value;
+            var existingHome = form.querySelector('[name="existing_home_number"]') ? form.querySelector('[name="existing_home_number"]').value.trim() : '';
+            // create or update hidden fields for server
+            var modeField = form.querySelector('input[name="add_to_existing"]');
+            if (!modeField) {
+                modeField = document.createElement('input');
+                modeField.type = 'hidden'; modeField.name = 'add_to_existing';
+                form.appendChild(modeField);
+            }
+            modeField.value = (mode === 'existing') ? '1' : '0';
+            var existingField = form.querySelector('input[name="existing_home_number_hidden"]');
+            if (!existingField) {
+                existingField = document.createElement('input');
+                existingField.type = 'hidden'; existingField.name = 'existing_home_number_hidden';
+                form.appendChild(existingField);
+            }
+            existingField.value = existingHome;
+
+            // Basic client-side validation: when adding to existing, require an existing home number
+            if (mode === 'existing' && !existingHome) {
+                e.preventDefault();
+                messageDiv.textContent = 'Please enter the existing house number to add members to.';
+                try { showToast('error', 'Enter existing house number'); } catch(e) {}
+                return;
+            }
             messageDiv.textContent = '';
         });
     });
@@ -375,6 +442,15 @@
         <form method="post" action="<?= base_url('add-details') ?>" enctype="multipart/form-data">
             <div class="form-section">
                 <div class="form-section-title">Home Details</div>
+                <div style="margin-bottom:12px;display:flex;gap:12px;align-items:center;">
+                    <label style="font-weight:600;margin-right:8px;">Mode:</label>
+                    <label style="display:inline-flex;align-items:center;gap:6px;"><input type="radio" name="home_mode" value="new" checked> New Home</label>
+                    <label style="display:inline-flex;align-items:center;gap:6px;"><input type="radio" name="home_mode" value="existing"> Add to Existing Home</label>
+                    <div id="existing-home-input" style="display:none;margin-left:12px;">
+                        <input type="text" name="existing_home_number" placeholder="Enter existing house number">
+                        <small style="color:#666;display:block">Enter the house number of the existing home to add members to.</small>
+                    </div>
+                </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label>Home Number</label>
@@ -441,7 +517,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>NIC</label>
-                        <input type="text" name="nic" required>
+                        <input type="text" name="nic">
                     </div>
                     <div class="form-group">
                         <label>Gender</label>
