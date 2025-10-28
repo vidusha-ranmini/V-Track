@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Details - V-Track</title>
+    <title>V-Track</title>
     <link rel="stylesheet" href="<?= base_url('styles.css') ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
@@ -191,7 +191,7 @@
                     <option value="">All</option>
                     <option value="aswasuma">Aswasuma</option>
                     <option value="adult">Adult Offers</option>
-                   
+                    <option value="mahapola">Mahapola</option>
                     <option value="grade5">Grade 5 Scholarship</option>
                 </select>
             </div>
@@ -230,7 +230,7 @@
                 <h3>Edit Member</h3>
                 <form id="edit-form" enctype="multipart/form-data">
                     <input type="hidden" name="id">
-                    <input type="hidden" name="cv" value="">
+                     <input type="hidden" name="cv" value=""> 
                     <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:8px;">
                         <div style="flex:1;min-width:220px;">
                             <label>Full Name</label>
@@ -280,6 +280,7 @@
                                 <option value="farmer">Farmer</option>
                                 <option value="abroad">Abroad</option>
                                 <option value="self_employment">Self Employment</option>
+                                <option value="no">No </option>
                                 <option value="other">Other</option>
                             </select>
                         </div>
@@ -348,12 +349,12 @@
                         </div>
                     </div>
 
-                    <div style="margin-top:8px;">
+                    <!-- <div style="margin-top:8px;">
                         <label>Current CV</label>
                         <div id="current-cv" style="margin-bottom:8px;color:#444;font-size:0.95rem;"></div>
                         <label>Replace CV (optional)</label>
                         <input name="cv_file" type="file" accept="application/pdf,image/*" style="width:100%">
-                    </div>
+                    </div> -->
 
                     <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end;">
                         <button type="button" id="edit-cancel" class="quick-action-btn cancel small">Cancel</button>
@@ -478,7 +479,7 @@
             <div style="margin-bottom:12px;"><strong>NIC:</strong> ${member.nic}</div>
             <div style="margin-bottom:12px;"><strong>WhatsApp:</strong> ${member.whatsapp}</div>
             <div style="margin-bottom:12px;"><strong>Age:</strong> ${member.age ? member.age : 'N/A'}</div>
-            <div style="margin-bottom:12px;"><strong>CV:</strong> ${member.cv ? `<a href="<?= base_url('writable/uploads/') ?>${member.cv}" target="_blank">Download</a>` : 'No file attached'}</div>
+            
         `;
 
         // Add action buttons under the content
@@ -605,11 +606,15 @@
             }
         } catch(e) {}
         // set current cv filename so backend can receive it as text (server currently reads cv from POST)
-        form.cv.value = member.cv || '';
-        document.getElementById('current-cv').textContent = member.cv ? member.cv : 'No file attached';
+        try { form.cv.value = member.cv || ''; } catch(e) {}
+        try {
+            var currentCvEl = document.getElementById('current-cv');
+            if (currentCvEl) currentCvEl.textContent = member.cv ? member.cv : 'No file attached';
+        } catch(e) {}
         // Ensure conditional occupation fields are shown/hidden correctly
         try { toggleOccupation(form.querySelector('[name="occupation"]')); } catch(e) {}
-        modal.classList.add('show');
+        // Show the edit modal
+        try { modal.classList.add('show'); } catch(e) {}
     }
 
     // Edit modal handlers

@@ -84,7 +84,8 @@ class ViewDetailsModel
                     'grade' => isset($row['grade']) ? $row['grade'] : null,
                     'university_name' => isset($row['university_name']) ? $row['university_name'] : null,
                     'offers' => [],
-                    'nic' => $row['nic'],
+                    // Ensure NIC is returned as a string to avoid JavaScript numeric overflow
+                    'nic' => isset($row['nic']) && $row['nic'] !== null ? (string) $row['nic'] : '',
                     'whatsapp' => $row['whatsapp'],
                     'age' => isset($row['age']) ? $row['age'] : null,
                     'disabled' => isset($row['disabled']) ? $row['disabled'] : null,

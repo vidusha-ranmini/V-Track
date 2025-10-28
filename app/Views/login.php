@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>V-Track Login</title>
+    <title>V-Track</title>
     <link rel="stylesheet" href="<?= base_url('styles.css') ?>">
     <style>
         body {

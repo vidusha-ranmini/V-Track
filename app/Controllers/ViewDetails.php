@@ -11,7 +11,9 @@ class ViewDetails extends Controller
         $model = new ViewDetailsModel();
         $families = $model->getAllFamilies();
 
-        // Pass JSON-encoded data for the view to consume in JS
-        return view('view_details', ['detailsData' => json_encode($families)]);
+    // Pass JSON-encoded data for the view to consume in JS
+    // Use JSON_HEX_* flags to reduce XSS risk when embedding into a script
+    $json = json_encode($families, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+    return view('view_details', ['detailsData' => $json]);
     }
 }
