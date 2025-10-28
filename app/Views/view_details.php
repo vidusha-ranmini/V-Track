@@ -112,7 +112,23 @@
                 box-shadow: 0 8px 30px rgba(0,0,0,0.15);
                 overflow-y: auto;
                 max-height: 90vh;
+                position: relative; /* allow absolute-positioned close button */
             }
+            /* Top-right close button inside modal */
+            .modal-close-top {
+                position: absolute;
+                top: 12px;
+                right: 12px;
+                background: transparent;
+                border: none;
+                color: #333;
+                font-size: 22px;
+                line-height: 1;
+                cursor: pointer;
+                padding: 6px 8px;
+                border-radius: 6px;
+            }
+            .modal-close-top:hover { background: rgba(0,0,0,0.06); }
         #edit-form label { display:block; margin-bottom:6px; font-weight:600; }
         #edit-form input[type="text"], #edit-form input[type="number"], #edit-form select {
             width:100%; padding:8px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;
@@ -328,10 +344,9 @@
     <!-- Details modal (full member info) -->
     <div id="details-modal">
         <div class="modal-content" style="margin:auto;max-width:800px;">
+            <!-- Top-right close button -->
+            <button type="button" id="details-close-top" class="modal-close-top" aria-label="Close">&times;</button>
             <div id="details-modal-body"> </div>
-            <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end;">
-                <button type="button" id="details-close" class="quick-action-btn cancel small">Close</button>
-            </div>
         </div>
     </div>
     </div>
@@ -471,10 +486,10 @@
         // Show modal
         modal.classList.add('show');
 
-        // wire close button
-        var closeBtn = document.getElementById('details-close');
-        if (closeBtn) {
-            closeBtn.onclick = function() { document.getElementById('details-modal').classList.remove('show'); };
+        // wire top-right close button
+        var topClose = document.getElementById('details-close-top');
+        if (topClose) {
+            topClose.onclick = function() { document.getElementById('details-modal').classList.remove('show'); };
         }
     }
 

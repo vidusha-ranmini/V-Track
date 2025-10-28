@@ -97,3 +97,46 @@ body {
 	flex: 1;
 	padding: 40px;
 }
+/* Responsive adjustments */
+@media (max-width: 992px) {
+	.sidebar { width: 200px; }
+	.main-content { padding: 24px; }
+}
+
+@media (max-width: 768px) {
+	/* Stack layout for mobile */
+	.sidebar-layout { flex-direction: column; }
+	/* Hide the sidebar to save space (if you later add a toggle, remove this) */
+	.sidebar { display: none; }
+	.main-content { padding: 16px; }
+
+	/* Landing adjustments */
+	.landing-container { padding: 24px 16px; min-width: auto; }
+
+	/* Make containers fluid and reduce radius */
+	.view-details-container { max-width: 100%; margin: 0 12px 16px; padding: 18px; border-radius: 10px; }
+
+	/* Filters stack vertically */
+	.filter-row { flex-direction: column; gap: 10px; }
+	.filter-group { min-width: unset; width: 100%; }
+
+	/* Tables: allow horizontal scroll and reduce padding */
+	.details-table { display: block; width: 100%; overflow-x: auto; }
+	.details-table th, .details-table td { padding: 10px 8px; font-size: 0.95rem; }
+
+	/* Modal content should be nearly full width on small screens */
+	.modal-content { max-width: 96% !important; width: 96% !important; padding: 14px !important; }
+
+	/* Buttons and inputs full-width where appropriate */
+	.quick-action-btn { padding: 8px 10px; font-size: 0.96rem; }
+	input[type="text"], input[type="number"], select, textarea { font-size: 0.98rem; }
+
+	/* Sidebar links (if sidebar shown) become horizontal) */
+	.sidebar .sidebar-link { padding: 12px 16px; }
+}
+
+@media (max-width: 480px) {
+	.vtrack-title { font-size: 1.6rem; }
+	.landing-container { padding: 18px 12px; }
+	.quick-action-btn { padding: 7px 10px; font-size: 0.92rem; }
+}

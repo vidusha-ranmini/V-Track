@@ -83,14 +83,14 @@
                 <a href="<?= base_url('dashboard/report') ?>" class="quick-action-btn" style="padding:10px 16px; font-size:0.95rem;"> <i class="fas fa-file-download"></i> Generate Report</a>
             </div>
         </div>
-        <div class="quick-actions">
+        <!-- <div class="quick-actions">
             <button class="quick-action-btn" onclick="window.location.href='<?= base_url('add-details') ?>'">
                 <i class="fas fa-user-plus"></i> Add Details
             </button>
             <button class="quick-action-btn" onclick="window.location.href='<?= base_url('view-details') ?>'">
                 <i class="fas fa-list"></i> View Details
             </button>
-        </div>
+        </div> -->
         <div class="charts-grid">
             <div class="chart-card">
                 <div class="chart-title">Job Categories</div>
