@@ -8,8 +8,7 @@ class RoadsSeeder extends Seeder
     public function run()
     {
         $db = \Config\Database::connect();
-
-        // Helper to insert road and return id
+        // Helper to insert road and return id (idempotent)
         $roads = [
             '979 Main road',
             '979 Side road',
@@ -26,8 +25,16 @@ class RoadsSeeder extends Seeder
         ];
 
         $roadIds = [];
+        $roadTable = $db->table('roads');
         foreach ($roads as $r) {
-            $db->table('roads')->insert(['name' => $r, 'created_at' => date('Y-m-d H:i:s')]);
+            // Trim and normalize
+            $name = trim($r);
+            $existing = $roadTable->where('name', $name)->get()->getRowArray();
+            if ($existing) {
+                $roadIds[$r] = $existing['id'];
+                continue;
+            }
+            $roadTable->insert(['name' => $name, 'created_at' => date('Y-m-d H:i:s')]);
             $roadIds[$r] = $db->insertID();
         }
 
@@ -54,11 +61,19 @@ class RoadsSeeder extends Seeder
         ];
 
         $subIds = [];
+        $subTable = $db->table('sub_roads');
         foreach ($subRoads as $road => $subs) {
             $rid = $roadIds[$road] ?? null;
             if (!$rid) continue;
             foreach ($subs as $s) {
-                $db->table('sub_roads')->insert(['road_id' => $rid, 'name' => $s, 'created_at' => date('Y-m-d H:i:s')]);
+                $sname = trim($s);
+                // check existing by road_id + name
+                $existing = $subTable->where(['road_id' => $rid, 'name' => $sname])->get()->getRowArray();
+                if ($existing) {
+                    $subIds[$s] = $existing['id'];
+                    continue;
+                }
+                $subTable->insert(['road_id' => $rid, 'name' => $sname, 'created_at' => date('Y-m-d H:i:s')]);
                 $subIds[$s] = $db->insertID();
             }
         }
@@ -89,9 +104,21 @@ class RoadsSeeder extends Seeder
             $addresses[] = ['road_id' => $rid, 'sub_road_id' => null, 'address' => $sr . ' - Block 2', 'created_at' => date('Y-m-d H:i:s')];
         }
 
-        // Insert all addresses
-        if (!empty($addresses)) {
-            $db->table('addresses')->insertBatch($addresses);
+        // Insert all addresses idempotently (check before insert)
+        $addrTable = $db->table('addresses');
+        foreach ($addresses as $a) {
+            $roadId = isset($a['road_id']) ? $a['road_id'] : null;
+            $subId = isset($a['sub_road_id']) ? $a['sub_road_id'] : null;
+            $addrText = isset($a['address']) ? trim($a['address']) : '';
+            if (empty($addrText)) continue;
+            // check existing
+            $qb = $addrTable->where('address', $addrText);
+            if ($roadId) $qb->where('road_id', $roadId); else $qb->where('road_id IS NULL');
+            if ($subId) $qb->where('sub_road_id', $subId); else $qb->where('sub_road_id IS NULL');
+            $existing = $qb->get()->getRowArray();
+            if ($existing) continue;
+
+            $addrTable->insert(['road_id' => $roadId, 'sub_road_id' => $subId, 'address' => $addrText, 'created_at' => date('Y-m-d H:i:s')]);
         }
     }
 }
