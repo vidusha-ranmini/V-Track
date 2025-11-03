@@ -307,6 +307,62 @@
             try { updateSubRoadOptions(); } catch(e){}
         }
 
+        // Address mapping (sample addresses). Keys match road or sub-road option values.
+        var addressMap = {
+            // Main roads
+            '979 Main road': ['979 Main Rd - 1','979 Main Rd - 2','979 Main Rd - 3'],
+            '223 Main road': ['223 Main Rd - 5','223 Main Rd - 7'],
+            'Korala maima main road': ['Korala Main No.1','Korala Main No.2'],
+            'Maddegoda polhena main road': ['Maddegoda Main 12','Maddegoda Main 14'],
+            'Praja mandala para main road': ['Praja Main 3','Praja Main 4'],
+            '327 Main road': ['327 Main 21','327 Main 22'],
+            // Side roads (some examples)
+            '979 Side road': ['979 Side - Block A','979 Side - Block B'],
+            '223 Side road': ['223 Side - Block 1','223 Side - Block 2'],
+            'Korala maima side road': ['Korala Side - A','Korala Side - B'],
+            'Maddegoda polhena side road': ['Maddegoda Side - 1','Maddegoda Side - 2'],
+            'Praja mandala para side road': ['Praja Side - East','Praja Side - West'],
+            '327 Side road': ['327 Side - Alpha','327 Side - Beta'],
+
+            // A few explicit sub-lane examples (others will fall back to generated samples)
+            '979 1st lane': ['979 1st lane - 10','979 1st lane - 12'],
+            '979 2nd lane': ['979 2nd lane - 3','979 2nd lane - 5'],
+            '223 1st lane': ['223 1st lane - 1','223 1st lane - 2'],
+            'Korala maima 1st lane': ['Korala 1st - 7','Korala 1st - 9'],
+            'Maddegoda 1st lane': ['Maddegoda 1st - 2','Maddegoda 1st - 4']
+        };
+
+        function updateAddressOptions() {
+            var addrEl = form.querySelector('[name="address"]');
+            if (!addrEl) return;
+            // prefer selected sub-road if enabled and chosen
+            var subEl = form.querySelector('[name="sub_road"]');
+            var roadEl = form.querySelector('[name="home_number"]');
+            var selectedSub = (subEl && !subEl.disabled) ? (subEl.value || '') : '';
+            var selectedRoad = roadEl ? (roadEl.value || '') : '';
+            var key = selectedSub || selectedRoad;
+            addrEl.innerHTML = '';
+            if (!key) {
+                var o = document.createElement('option'); o.value = ''; o.text = 'Select Road or Sub Road first'; addrEl.appendChild(o); addrEl.disabled = true; return;
+            }
+            // Look up addresses; if none, generate 3 sample addresses from the key
+            var list = addressMap[key];
+            if (!list) {
+                list = [key + ' - 1','' + key + ' - 2', key + ' - 3'];
+            }
+            var first = document.createElement('option'); first.value = ''; first.text = 'Select Address'; addrEl.appendChild(first);
+            list.forEach(function(a){ var o = document.createElement('option'); o.value = a; o.text = a; addrEl.appendChild(o); });
+            addrEl.disabled = false;
+        }
+
+        // Ensure addresses update when sub-road changes as well
+        var subSel = form.querySelector('[name="sub_road"]');
+        if (subSel) subSel.addEventListener('change', function(){ try { updateAddressOptions(); } catch(e){} });
+        // Also update addresses when road changes (in case main road has addresses)
+        if (roadSel) roadSel.addEventListener('change', function(){ try { updateAddressOptions(); } catch(e){} });
+        // initialize address select
+        try { updateAddressOptions(); } catch(e){}
+
         // compute age on NIC blur
         var nicInput = form.querySelector('[name="nic"]');
         if (nicInput) {
@@ -542,7 +598,9 @@
                     </div>
                     <div class="form-group">
                         <label>Address</label>
-                        <input type="text" name="address" required>
+                        <select name="address" id="address-select" required>
+                            <option value="">Select Road or Sub Road first</option>
+                        </select>
                     </div>
                 </div>
                 <div class="form-row">
