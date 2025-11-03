@@ -10,6 +10,9 @@ class HomeModel extends Model
     protected $allowedFields = [
         'home_number',
         'address',
+        'road_id',
+        'sub_road_id',
+        'address_id',
         'no_of_members',
         'has_assessment',
         'assessment_number',

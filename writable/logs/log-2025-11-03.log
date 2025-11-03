@@ -8,3 +8,19 @@ DEBUG - 2025-11-03 04:07:18 --> Session: Class initialized using 'CodeIgniter\Se
 DEBUG - 2025-11-03 04:11:51 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
 DEBUG - 2025-11-03 04:18:28 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
 DEBUG - 2025-11-03 04:25:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-03 04:39:18 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+ERROR - 2025-11-03 04:44:25 --> SQLite3Exception: no such table: roads in C:\xampp\htdocs\V-Track\system\Database\SQLite3\Connection.php:175
+Stack trace:
+#0 C:\xampp\htdocs\V-Track\system\Database\SQLite3\Connection.php(175): SQLite3->exec('INSERT INTO `ro...')
+#1 C:\xampp\htdocs\V-Track\system\Database\BaseConnection.php(729): CodeIgniter\Database\SQLite3\Connection->execute('INSERT INTO `ro...')
+#2 C:\xampp\htdocs\V-Track\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `ro...')
+#3 C:\xampp\htdocs\V-Track\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `ro...', Array, false)
+#4 C:\xampp\htdocs\V-Track\app\Database\Seeds\RoadsSeeder.php(30): CodeIgniter\Database\BaseBuilder->insert(Array)
+#5 C:\xampp\htdocs\V-Track\system\Database\Seeder.php(149): App\Database\Seeds\RoadsSeeder->run()
+#6 C:\xampp\htdocs\V-Track\system\Commands\Database\Seed.php(79): CodeIgniter\Database\Seeder->call('App\\Database\\Se...')
+#7 C:\xampp\htdocs\V-Track\system\CLI\Commands.php(74): CodeIgniter\Commands\Database\Seed->run(Array)
+#8 C:\xampp\htdocs\V-Track\system\CLI\Console.php(47): CodeIgniter\CLI\Commands->run('db:seed', Array)
+#9 C:\xampp\htdocs\V-Track\system\Boot.php(388): CodeIgniter\CLI\Console->run()
+#10 C:\xampp\htdocs\V-Track\system\Boot.php(133): CodeIgniter\Boot::runCommand(Object(CodeIgniter\CLI\Console))
+#11 C:\xampp\htdocs\V-Track\spark(87): CodeIgniter\Boot::bootSpark(Object(Config\Paths))
+#12 {main}

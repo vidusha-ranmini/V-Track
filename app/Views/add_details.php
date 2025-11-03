@@ -213,7 +213,7 @@
             var mode = form.querySelector('[name="home_mode"]:checked').value;
             var isExisting = (mode === 'existing');
             // disable/enable home detail inputs when adding to existing
-            ['home_number','sub_road','address','no_of_members','has_assessment','assessment_number','resident_type','waste_disposal'].forEach(function(n){
+            ['road_id','sub_road_id','address_id','no_of_members','has_assessment','assessment_number','resident_type','waste_disposal'].forEach(function(n){
                 var el = form.querySelector('[name="'+n+'"]');
                 if (!el) return;
                 el.disabled = isExisting;
@@ -243,31 +243,49 @@
             return new Date().getFullYear() - year;
         }
 
-        // Sub-road options mapped to parent Road selection
-        var subRoadMap = {
-            '979 Side road': [
-                '979 1st lane','979 2nd lane','979 3rd lane','Selinco Waththa','979 4th lane','Haritha uyana','979 5th lane','Sisla uyana','Jaya mawatha','979 6th Lane','979 7th lane','Seram lane','979 8th Lane','979 9th lane','Golad lane','pragathi mawatha','Sisira mawatha','Metro Niwas road','Green Lane','Ranawiru Chrandrakumara mawatha','979 10th lane','979 11 lane'
-            ],
-            '223 Side road': [
-                '223 1st lane','223 2nd lane','223 3rd lane','223 4th lane','Gorak gaha handiya para','Daham mawatha','suhada mawatha II','223 8th lane','223 9th lane','223 10th lane','223 11 lane'
-            ],
-            'Korala maima side road': [
-                'Welamada Para(Alubogahawaththa)','Korala maima 1st lane','Korala maima 2nd road','Annasiwaththa para','Pokuna para','Moragahalandha para','Korala maima 3rd lane','Korala maima 4th lane','rubber waththa para','Mudhaleege para'
-            ],
-            'Maddegoda polhena side road': [
-                'Ranawiru Kapila Bandara mawatha','Maddegoda 1st lane','Maddegoda 2nd lane','Dewala para','Alubogahawaththa para','Dunkolamaduwa Para','Maddegoda 3rd lane','Maddegoda 4th lane','Maddegoda 5th lane','Maddegoda 6th lane'
-            ],
-            'Praja mandala para side road': [
-                'Suhada Mawatha I','Mangala mawatha','prajamadala 2nd lane'
-            ],
-            '327 Side road': [
-                '327 1st lane','Kurudugaha waththa para'
-            ]
-        };
+        // Build maps for sub-roads and addresses from server-provided arrays (if available)
+        var subRoadMap = {};
+        var addressMap = {};
+        var roadIdToName = {};
+        <?php if (isset($roads) && is_array($roads)): ?>
+            <?php foreach ($roads as $r): ?>
+                roadIdToName[<?= json_encode($r['id']) ?>] = <?= json_encode($r['name']) ?>;
+            <?php endforeach; ?>
+        <?php endif; ?>
+        <?php if (isset($sub_roads) && is_array($sub_roads)): ?>
+            <?php foreach ($sub_roads as $sr): ?>
+                (function(){
+                    var rid = <?= json_encode($sr['road_id']) ?>;
+                    var sid = <?= json_encode($sr['id']) ?>;
+                    var name = <?= json_encode($sr['name']) ?>;
+                    subRoadMap[rid] = subRoadMap[rid] || [];
+                    subRoadMap[rid].push({id: sid, name: name});
+                })();
+            <?php endforeach; ?>
+        <?php endif; ?>
+
+        <?php if (isset($addresses) && is_array($addresses)): ?>
+            <?php foreach ($addresses as $a): ?>
+                (function(){
+                    var rid = <?= json_encode($a['road_id']) ?>;
+                    var srid = <?= json_encode($a['sub_road_id']) ?>;
+                    var id = <?= json_encode($a['id']) ?>;
+                    var addressText = <?= json_encode($a['address']) ?>;
+                    if (srid) {
+                        addressMap['sr_' + srid] = addressMap['sr_' + srid] || [];
+                        addressMap['sr_' + srid].push({id: id, text: addressText});
+                    }
+                    if (rid) {
+                        addressMap['r_' + rid] = addressMap['r_' + rid] || [];
+                        addressMap['r_' + rid].push({id: id, text: addressText});
+                    }
+                })();
+            <?php endforeach; ?>
+        <?php endif; ?>
 
         function updateSubRoadOptions() {
-            var roadEl = form.querySelector('[name="home_number"]');
-            var subEl = form.querySelector('[name="sub_road"]');
+            var roadEl = form.querySelector('[name="road_id"]');
+            var subEl = form.querySelector('[name="sub_road_id"]');
             if (!subEl) return;
             var road = roadEl ? roadEl.value : '';
             // clear existing
@@ -280,27 +298,28 @@
                 return;
             }
 
-            // If a Main road is selected, there are no sub-roads -> keep disabled
-            if (road.toLowerCase().indexOf('main') !== -1) {
+            // If the selected road name contains 'main' we treat it as having no sub-roads.
+            var roadName = roadIdToName[road] || '';
+            if (roadName.toLowerCase().indexOf('main') !== -1) {
                 var o2 = document.createElement('option'); o2.value = ''; o2.text = 'No sub-roads for main road'; subEl.appendChild(o2);
                 subEl.disabled = true;
                 return;
             }
 
             var list = subRoadMap[road] || null;
-            if (!list) {
+            if (!list || list.length === 0) {
                 var o3 = document.createElement('option'); o3.value = ''; o3.text = 'No sub-roads available'; subEl.appendChild(o3);
                 subEl.disabled = true;
                 return;
             }
 
             var first = document.createElement('option'); first.value = ''; first.text = 'Select Sub Road'; subEl.appendChild(first);
-            list.forEach(function(v){ var o = document.createElement('option'); o.value = v; o.text = v; subEl.appendChild(o); });
+            list.forEach(function(v){ var o = document.createElement('option'); o.value = v.id; o.text = v.name; subEl.appendChild(o); });
             subEl.disabled = false;
         }
 
         // wire road -> sub-road
-        var roadSel = form.querySelector('[name="home_number"]');
+        var roadSel = form.querySelector('[name="road_id"]');
         if (roadSel) {
             roadSel.addEventListener('change', function(){ try { updateSubRoadOptions(); } catch(e){} });
             // initialize
@@ -333,25 +352,31 @@
         };
 
         function updateAddressOptions() {
-            var addrEl = form.querySelector('[name="address"]');
+            var addrEl = form.querySelector('[name="address_id"]');
             if (!addrEl) return;
             // prefer selected sub-road if enabled and chosen
-            var subEl = form.querySelector('[name="sub_road"]');
-            var roadEl = form.querySelector('[name="home_number"]');
+            var subEl = form.querySelector('[name="sub_road_id"]');
+            var roadEl = form.querySelector('[name="road_id"]');
             var selectedSub = (subEl && !subEl.disabled) ? (subEl.value || '') : '';
             var selectedRoad = roadEl ? (roadEl.value || '') : '';
-            var key = selectedSub || selectedRoad;
             addrEl.innerHTML = '';
-            if (!key) {
+            if (!selectedSub && !selectedRoad) {
                 var o = document.createElement('option'); o.value = ''; o.text = 'Select Road or Sub Road first'; addrEl.appendChild(o); addrEl.disabled = true; return;
             }
-            // Look up addresses; if none, generate 3 sample addresses from the key
-            var list = addressMap[key];
-            if (!list) {
-                list = [key + ' - 1','' + key + ' - 2', key + ' - 3'];
+
+            // prefer addresses associated to sub-road first
+            var list = [];
+            if (selectedSub) list = addressMap['sr_' + selectedSub] || [];
+            if ((!list || list.length === 0) && selectedRoad) list = addressMap['r_' + selectedRoad] || [];
+
+            if (!list || list.length === 0) {
+                // fallback: generate a few sample addresses from the selected names
+                var keyName = (selectedSub && roadIdToName[selectedRoad] ? roadIdToName[selectedRoad] + ' / ' + selectedSub : (roadIdToName[selectedRoad] || selectedRoad));
+                list = [{id: '', text: keyName + ' - 1'},{id: '', text: keyName + ' - 2'},{id: '', text: keyName + ' - 3'}];
             }
+
             var first = document.createElement('option'); first.value = ''; first.text = 'Select Address'; addrEl.appendChild(first);
-            list.forEach(function(a){ var o = document.createElement('option'); o.value = a; o.text = a; addrEl.appendChild(o); });
+            list.forEach(function(a){ var o = document.createElement('option'); o.value = a.id || ''; o.text = a.text; addrEl.appendChild(o); });
             addrEl.disabled = false;
         }
 
@@ -574,31 +599,30 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Road</label>
-                        <select name="home_number" required>
+                        <select name="road_id" id="road-select" required>
                             <option value="">Select Road</option>
-                            <option value="979 Main road">979 Main road</option>
-                            <option value="979 Side road">979 Side road</option>
-                            <option value="223 Main road">223 Main road</option>
-                            <option value="223 Side road">223 Side road</option>
-                            <option value="Korala maima main road">Korala maima main road</option>
-                            <option value="Korala maima side road">Korala maima side road</option>
-                            <option value="Maddegoda polhena main road">Maddegoda polhena main road</option>
-                            <option value="Maddegoda polhena side road">Maddegoda polhena side road</option>
-                            <option value="Praja mandala para main road">Praja mandala para main road</option>
-                            <option value="Praja mandala para side road">Praja mandala para side road</option>
-                            <option value="327 Main road">327 Main road</option>
-                            <option value="327 Side road">327 Side road</option>
+                            <?php if (isset($roads) && is_array($roads) && count($roads) > 0): ?>
+                                <?php foreach ($roads as $r): ?>
+                                    <option value="<?= esc($r['id']) ?>"><?= esc($r['name']) ?></option>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <!-- Fallback list if DB not seeded -->
+                                <option value="">979 Main road</option>
+                                <option value="">979 Side road</option>
+                                <option value="">223 Main road</option>
+                                <option value="">223 Side road</option>
+                            <?php endif; ?>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Sub Road</label>
-                        <select name="sub_road" id="sub-road-select" disabled>
+                        <select name="sub_road_id" id="sub-road-select" disabled>
                             <option value="">Select Road first</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Address</label>
-                        <select name="address" id="address-select" required>
+                        <select name="address_id" id="address-select" required>
                             <option value="">Select Road or Sub Road first</option>
                         </select>
                     </div>

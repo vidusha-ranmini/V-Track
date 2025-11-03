@@ -9,8 +9,28 @@ class Details extends Controller
 {
     public function create()
     {
-        // Show the form
-        return view('add_details');
+        // Load roads/sub-roads/addresses from DB (if available) so the view can populate selects from database
+        $db = \Config\Database::connect();
+        $roads = [];
+        $subRoads = [];
+        $addresses = [];
+        try {
+            $roads = $db->table('roads')->orderBy('name')->get()->getResultArray();
+        } catch (\Exception $e) {
+            $roads = [];
+        }
+        try {
+            $subRoads = $db->table('sub_roads')->orderBy('name')->get()->getResultArray();
+        } catch (\Exception $e) {
+            $subRoads = [];
+        }
+        try {
+            $addresses = $db->table('addresses')->orderBy('address')->get()->getResultArray();
+        } catch (\Exception $e) {
+            $addresses = [];
+        }
+
+        return view('add_details', ['roads' => $roads, 'sub_roads' => $subRoads, 'addresses' => $addresses]);
     }
 
     public function store()
@@ -27,6 +47,9 @@ class Details extends Controller
         $data = [
             'home_number'    => $this->request->getPost('home_number'),
             'address'        => $this->request->getPost('address'),
+            'road_id'        => $this->request->getPost('road_id') ?: null,
+            'sub_road_id'    => $this->request->getPost('sub_road_id') ?: null,
+            'address_id'     => $this->request->getPost('address_id') ?: null,
             'no_of_members'  => $this->request->getPost('no_of_members'),
             'has_assessment' => $this->request->getPost('has_assessment') ?? 'no',
             'assessment_number' => $this->request->getPost('assessment_number') ?: null,
@@ -45,9 +68,19 @@ class Details extends Controller
             }
             $homeId = $existingHome['id'];
         } else {
-            // New home flow: require home_number and address
-            if (empty($data['home_number']) || empty($data['address'])) {
-                return redirect()->back()->with('error', 'Home number and address are required.');
+            // New home flow: require home_number (road) and address selection
+            // If an address_id was provided, translate it to text for the `address` column
+            if (!empty($data['address_id'])) {
+                try {
+                    $addrRow = $db->table('addresses')->where('id', $data['address_id'])->get()->getRowArray();
+                    if ($addrRow) $data['address'] = $addrRow['address'];
+                } catch (\Exception $e) {
+                    // ignore and keep posted address value
+                }
+            }
+
+            if (empty($data['road_id']) || empty($data['address'])) {
+                return redirect()->back()->with('error', 'Road and address are required.');
             }
             // Use transaction to ensure atomicity
             $db->transStart();
