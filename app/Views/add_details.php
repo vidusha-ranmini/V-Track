@@ -213,7 +213,7 @@
             var mode = form.querySelector('[name="home_mode"]:checked').value;
             var isExisting = (mode === 'existing');
             // disable/enable home detail inputs when adding to existing
-            ['home_number','address','no_of_members','has_assessment','assessment_number','resident_type','waste_disposal'].forEach(function(n){
+            ['home_number','sub_road','address','no_of_members','has_assessment','assessment_number','resident_type','waste_disposal'].forEach(function(n){
                 var el = form.querySelector('[name="'+n+'"]');
                 if (!el) return;
                 el.disabled = isExisting;
@@ -241,6 +241,70 @@
             var year = computeBirthYearFromNIC(nic);
             if (!year) return null;
             return new Date().getFullYear() - year;
+        }
+
+        // Sub-road options mapped to parent Road selection
+        var subRoadMap = {
+            '979 Side road': [
+                '979 1st lane','979 2nd lane','979 3rd lane','Selinco Waththa','979 4th lane','Haritha uyana','979 5th lane','Sisla uyana','Jaya mawatha','979 6th Lane','979 7th lane','Seram lane','979 8th Lane','979 9th lane','Golad lane','pragathi mawatha','Sisira mawatha','Metro Niwas road','Green Lane','Ranawiru Chrandrakumara mawatha','979 10th lane','979 11 lane'
+            ],
+            '223 Side road': [
+                '223 1st lane','223 2nd lane','223 3rd lane','223 4th lane','Gorak gaha handiya para','Daham mawatha','suhada mawatha II','223 8th lane','223 9th lane','223 10th lane','223 11 lane'
+            ],
+            'Korala maima side road': [
+                'Welamada Para(Alubogahawaththa)','Korala maima 1st lane','Korala maima 2nd road','Annasiwaththa para','Pokuna para','Moragahalandha para','Korala maima 3rd lane','Korala maima 4th lane','rubber waththa para','Mudhaleege para'
+            ],
+            'Maddegoda polhena side road': [
+                'Ranawiru Kapila Bandara mawatha','Maddegoda 1st lane','Maddegoda 2nd lane','Dewala para','Alubogahawaththa para','Dunkolamaduwa Para','Maddegoda 3rd lane','Maddegoda 4th lane','Maddegoda 5th lane','Maddegoda 6th lane'
+            ],
+            'Praja mandala para side road': [
+                'Suhada Mawatha I','Mangala mawatha','prajamadala 2nd lane'
+            ],
+            '327 Side road': [
+                '327 1st lane','Kurudugaha waththa para'
+            ]
+        };
+
+        function updateSubRoadOptions() {
+            var roadEl = form.querySelector('[name="home_number"]');
+            var subEl = form.querySelector('[name="sub_road"]');
+            if (!subEl) return;
+            var road = roadEl ? roadEl.value : '';
+            // clear existing
+            subEl.innerHTML = '';
+
+            // If no road selected, instruct the user and keep disabled
+            if (!road) {
+                var o = document.createElement('option'); o.value = ''; o.text = 'Select Road first'; subEl.appendChild(o);
+                subEl.disabled = true;
+                return;
+            }
+
+            // If a Main road is selected, there are no sub-roads -> keep disabled
+            if (road.toLowerCase().indexOf('main') !== -1) {
+                var o2 = document.createElement('option'); o2.value = ''; o2.text = 'No sub-roads for main road'; subEl.appendChild(o2);
+                subEl.disabled = true;
+                return;
+            }
+
+            var list = subRoadMap[road] || null;
+            if (!list) {
+                var o3 = document.createElement('option'); o3.value = ''; o3.text = 'No sub-roads available'; subEl.appendChild(o3);
+                subEl.disabled = true;
+                return;
+            }
+
+            var first = document.createElement('option'); first.value = ''; first.text = 'Select Sub Road'; subEl.appendChild(first);
+            list.forEach(function(v){ var o = document.createElement('option'); o.value = v; o.text = v; subEl.appendChild(o); });
+            subEl.disabled = false;
+        }
+
+        // wire road -> sub-road
+        var roadSel = form.querySelector('[name="home_number"]');
+        if (roadSel) {
+            roadSel.addEventListener('change', function(){ try { updateSubRoadOptions(); } catch(e){} });
+            // initialize
+            try { updateSubRoadOptions(); } catch(e){}
         }
 
         // compute age on NIC blur
@@ -453,8 +517,28 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Home Number</label>
-                        <input type="text" name="home_number" required>
+                        <label>Road</label>
+                        <select name="home_number" required>
+                            <option value="">Select Road</option>
+                            <option value="979 Main road">979 Main road</option>
+                            <option value="979 Side road">979 Side road</option>
+                            <option value="223 Main road">223 Main road</option>
+                            <option value="223 Side road">223 Side road</option>
+                            <option value="Korala maima main road">Korala maima main road</option>
+                            <option value="Korala maima side road">Korala maima side road</option>
+                            <option value="Maddegoda polhena main road">Maddegoda polhena main road</option>
+                            <option value="Maddegoda polhena side road">Maddegoda polhena side road</option>
+                            <option value="Praja mandala para main road">Praja mandala para main road</option>
+                            <option value="Praja mandala para side road">Praja mandala para side road</option>
+                            <option value="327 Main road">327 Main road</option>
+                            <option value="327 Side road">327 Side road</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Sub Road</label>
+                        <select name="sub_road" id="sub-road-select" disabled>
+                            <option value="">Select Road first</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label>Address</label>

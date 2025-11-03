@@ -1,0 +1,3 @@
+DEBUG - 2025-11-01 06:06:04 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-01 06:06:04 --> Database file path: C:\xampp\htdocs\V-Track\writable\database\v-track.db
+DEBUG - 2025-11-01 06:06:04 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
