@@ -283,6 +283,16 @@
             <?php endforeach; ?>
         <?php endif; ?>
 
+        // Fallback sub-road lists when DB is not seeded or when option values are textual.
+        var fallbackSubRoads = {
+            '979 Side road': ['979 1st lane','979 2nd lane','979 3rd lane','Selinco Waththa','979 4th lane','Haritha uyana','979 5th lane','Sisla uyana','Jaya mawatha','979 6th Lane','979 7th lane','Seram lane','979 8th Lane','979 9th lane','Golad lane','pragathi mawatha','Sisira mawatha','Metro Niwas road','Green Lane','Ranawiru Chrandrakumara mawatha','979 10th lane','979 11 lane'],
+            '223 Side road': ['223 1st lane','223 2nd lane','223 3rd lane','223 4th lane','Gorak gaha handiya para','Daham mawatha','suhada mawatha II','223 8th lane','223 9th lane','223 10th lane','223 11 lane'],
+            'Korala maima side road': ['Welamada Para(Alubogahawaththa)','Korala maima 1st lane','Korala maima 2nd road','Annasiwaththa para','Pokuna para','Moragahalandha para','Korala maima 3rd lane','Korala maima 4th lane','rubber waththa para','Mudhaleege para'],
+            'Maddegoda polhena side road': ['Ranawiru Kapila Bandara mawatha','Maddegoda 1st lane','Maddegoda 2nd lane','Dewala para','Alubogahawaththa para','Dunkolamaduwa Para','Maddegoda 3rd lane','Maddegoda 4th lane','Maddegoda 5th lane','Maddegoda 6th lane'],
+            'Praja mandala para side road': ['Suhada Mawatha I','Mangala mawatha','prajamadala 2nd lane'],
+            '327 Side road': ['327 1st lane','Kurudugaha waththa para']
+        };
+
         function updateSubRoadOptions() {
             var roadEl = form.querySelector('[name="road_id"]');
             var subEl = form.querySelector('[name="sub_road_id"]');
@@ -298,15 +308,25 @@
                 return;
             }
 
+            // Determine the human-readable road name. If road is an ID, use mapping;
+            // otherwise road may already be a textual fallback value.
+            var roadName = roadIdToName[road] || road;
+
             // If the selected road name contains 'main' we treat it as having no sub-roads.
-            var roadName = roadIdToName[road] || '';
-            if (roadName.toLowerCase().indexOf('main') !== -1) {
+            if (('' + roadName).toLowerCase().indexOf('main') !== -1) {
                 var o2 = document.createElement('option'); o2.value = ''; o2.text = 'No sub-roads for main road'; subEl.appendChild(o2);
                 subEl.disabled = true;
                 return;
             }
 
-            var list = subRoadMap[road] || null;
+            // Prefer DB-provided subRoadMap keyed by road id. If absent, try fallback map
+            // keyed by road name (useful when DB isn't seeded and option values are text).
+            var list = subRoadMap[road] || [];
+            if ((!list || list.length === 0) && fallbackSubRoads[roadName]) {
+                // Convert fallback names to objects that match {id, name}
+                list = fallbackSubRoads[roadName].map(function(n){ return {id: '', name: n}; });
+            }
+
             if (!list || list.length === 0) {
                 var o3 = document.createElement('option'); o3.value = ''; o3.text = 'No sub-roads available'; subEl.appendChild(o3);
                 subEl.disabled = true;
@@ -314,7 +334,7 @@
             }
 
             var first = document.createElement('option'); first.value = ''; first.text = 'Select Sub Road'; subEl.appendChild(first);
-            list.forEach(function(v){ var o = document.createElement('option'); o.value = v.id; o.text = v.name; subEl.appendChild(o); });
+            list.forEach(function(v){ var o = document.createElement('option'); o.value = v.id || v.name; o.text = v.name; subEl.appendChild(o); });
             subEl.disabled = false;
         }
 
@@ -326,30 +346,9 @@
             try { updateSubRoadOptions(); } catch(e){}
         }
 
-        // Address mapping (sample addresses). Keys match road or sub-road option values.
-        var addressMap = {
-            // Main roads
-            '979 Main road': ['979 Main Rd - 1','979 Main Rd - 2','979 Main Rd - 3'],
-            '223 Main road': ['223 Main Rd - 5','223 Main Rd - 7'],
-            'Korala maima main road': ['Korala Main No.1','Korala Main No.2'],
-            'Maddegoda polhena main road': ['Maddegoda Main 12','Maddegoda Main 14'],
-            'Praja mandala para main road': ['Praja Main 3','Praja Main 4'],
-            '327 Main road': ['327 Main 21','327 Main 22'],
-            // Side roads (some examples)
-            '979 Side road': ['979 Side - Block A','979 Side - Block B'],
-            '223 Side road': ['223 Side - Block 1','223 Side - Block 2'],
-            'Korala maima side road': ['Korala Side - A','Korala Side - B'],
-            'Maddegoda polhena side road': ['Maddegoda Side - 1','Maddegoda Side - 2'],
-            'Praja mandala para side road': ['Praja Side - East','Praja Side - West'],
-            '327 Side road': ['327 Side - Alpha','327 Side - Beta'],
-
-            // A few explicit sub-lane examples (others will fall back to generated samples)
-            '979 1st lane': ['979 1st lane - 10','979 1st lane - 12'],
-            '979 2nd lane': ['979 2nd lane - 3','979 2nd lane - 5'],
-            '223 1st lane': ['223 1st lane - 1','223 1st lane - 2'],
-            'Korala maima 1st lane': ['Korala 1st - 7','Korala 1st - 9'],
-            'Maddegoda 1st lane': ['Maddegoda 1st - 2','Maddegoda 1st - 4']
-        };
+        // Note: do not overwrite the `addressMap` that is built from server-side data
+        // above. The PHP block already populated `addressMap` keyed by
+        // 'sr_<subRoadId>' and 'r_<roadId>' so the view should use that.
 
         function updateAddressOptions() {
             var addrEl = form.querySelector('[name="address_id"]');
@@ -380,9 +379,9 @@
             addrEl.disabled = false;
         }
 
-        // Ensure addresses update when sub-road changes as well
-        var subSel = form.querySelector('[name="sub_road"]');
-        if (subSel) subSel.addEventListener('change', function(){ try { updateAddressOptions(); } catch(e){} });
+    // Ensure addresses update when sub-road changes as well
+    var subSel = form.querySelector('[name="sub_road_id"]');
+    if (subSel) subSel.addEventListener('change', function(){ try { updateAddressOptions(); } catch(e){} });
         // Also update addresses when road changes (in case main road has addresses)
         if (roadSel) roadSel.addEventListener('change', function(){ try { updateAddressOptions(); } catch(e){} });
         // initialize address select
@@ -613,11 +612,19 @@
                                     <option value="<?= esc($r['id']) ?>"><?= esc($r['name']) ?></option>
                                 <?php endforeach; ?>
                             <?php else: ?>
-                                <!-- Fallback list if DB not seeded -->
-                                <option value="">979 Main road</option>
-                                <option value="">979 Side road</option>
-                                <option value="">223 Main road</option>
-                                <option value="">223 Side road</option>
+                                <!-- Fallback list if DB not seeded: include full road list -->
+                                <option value="979 Main road">979 Main road</option>
+                                <option value="979 Side road">979 Side road</option>
+                                <option value="223 Main road">223 Main road</option>
+                                <option value="223 Side road">223 Side road</option>
+                                <option value="Korala maima main road">Korala maima main road</option>
+                                <option value="Korala maima side road">Korala maima side road</option>
+                                <option value="Maddegoda polhena main road">Maddegoda polhena main road</option>
+                                <option value="Maddegoda polhena side road">Maddegoda polhena side road</option>
+                                <option value="Praja mandala para main road">Praja mandala para main road</option>
+                                <option value="Praja mandala para side road">Praja mandala para side road</option>
+                                <option value="327 Main road">327 Main road</option>
+                                <option value="327 Side road">327 Side road</option>
                             <?php endif; ?>
                         </select>
                     </div>
