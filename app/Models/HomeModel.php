@@ -8,7 +8,6 @@ class HomeModel extends Model
     protected $table = 'homes';
     protected $primaryKey = 'id';
     protected $allowedFields = [
-        'home_number',
         'address',
         'road_id',
         'sub_road_id',

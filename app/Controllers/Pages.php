@@ -58,7 +58,7 @@ class Pages extends Controller
             'Content-Disposition' => 'attachment; filename="' . $filename . '"',
         ];
 
-        $columns = ['House Number','Address','Resident Type','Member Name','NIC','Age','Occupation','Offers','WhatsApp','Disabled','CV Filename'];
+    $columns = ['Location','Address','Resident Type','Member Name','NIC','Age','Occupation','Offers','WhatsApp','Disabled','CV Filename'];
 
         // Build CSV in memory and return as a standard response. Using a streamed response
         // helper caused issues on some environments, so assemble and return the full CSV.
@@ -67,7 +67,7 @@ class Pages extends Controller
         fwrite($fh, "\xEF\xBB\xBF");
         fputcsv($fh, $columns);
         foreach ($families as $fam) {
-            $house = $fam['house_number'] ?? '';
+            $house = $fam['location'] ?? '';
             $address = $fam['address'] ?? '';
             $resident = $fam['resident_type'] ?? '';
             foreach ($fam['members'] as $m) {

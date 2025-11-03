@@ -44,12 +44,18 @@ class ViewDetailsModel
             }
         }
 
-        $select = 'h.id AS home_id, h.home_number AS house_number, h.address, h.resident_type, ' . implode(', ', $memberFields) . ', mo.offer';
+        // Select road/sub-road/address names where available and fall back to home's address column
+        $select = 'h.id AS home_id, h.address AS home_address, h.resident_type, '
+            . 'r.name AS road_name, sr.name AS sub_road_name, a.address AS address_line, '
+            . implode(', ', $memberFields) . ', mo.offer';
 
         $builder = $this->db->table('homes h')
             ->select($select)
             ->join('members m', 'm.home_id = h.id', 'left')
             ->join('member_offers mo', 'mo.member_id = m.id', 'left')
+            ->join('roads r', 'r.id = h.road_id', 'left')
+            ->join('sub_roads sr', 'sr.id = h.sub_road_id', 'left')
+            ->join('addresses a', 'a.id = h.address_id', 'left')
             ->orderBy('h.id, m.id');
 
         $results = $builder->get()->getResultArray();
@@ -58,9 +64,18 @@ class ViewDetailsModel
         foreach ($results as $row) {
             $hid = $row['home_id'];
             if (!isset($families[$hid])) {
+                // Build a human-readable location string from road/sub-road/address
+                $parts = [];
+                if (!empty($row['road_name'])) $parts[] = $row['road_name'];
+                if (!empty($row['sub_road_name'])) $parts[] = $row['sub_road_name'];
+                // prefer the normalized address line when available, otherwise home's address
+                $addrLine = !empty($row['address_line']) ? $row['address_line'] : (!empty($row['home_address']) ? $row['home_address'] : '');
+                if (!empty($addrLine)) $parts[] = $addrLine;
+                $location = implode(' / ', $parts);
+
                 $families[$hid] = [
-                    'house_number' => $row['house_number'],
-                    'address' => $row['address'],
+                    'location' => $location,
+                    'address' => $addrLine,
                     'resident_type' => $row['resident_type'],
                     'members' => [],
                 ];
@@ -110,7 +125,7 @@ class ViewDetailsModel
                 $members[] = $m;
             }
             $out[] = [
-                'house_number' => $f['house_number'],
+                'location' => $f['location'],
                 'address' => $f['address'],
                 'resident_type' => $f['resident_type'],
                 'members' => $members,

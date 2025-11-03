@@ -24,3 +24,38 @@ Stack trace:
 #10 C:\xampp\htdocs\V-Track\system\Boot.php(133): CodeIgniter\Boot::runCommand(Object(CodeIgniter\CLI\Console))
 #11 C:\xampp\htdocs\V-Track\spark(87): CodeIgniter\Boot::bootSpark(Object(Config\Paths))
 #12 {main}
+ERROR - 2025-11-03 05:02:07 --> SQLite3Exception: duplicate column name: road_id in C:\xampp\htdocs\V-Track\system\Database\SQLite3\Connection.php:175
+Stack trace:
+#0 C:\xampp\htdocs\V-Track\system\Database\SQLite3\Connection.php(175): SQLite3->exec('ALTER TABLE `ho...')
+#1 C:\xampp\htdocs\V-Track\system\Database\BaseConnection.php(729): CodeIgniter\Database\SQLite3\Connection->execute('ALTER TABLE `ho...')
+#2 C:\xampp\htdocs\V-Track\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('ALTER TABLE `ho...')
+#3 C:\xampp\htdocs\V-Track\system\Database\Forge.php(772): CodeIgniter\Database\BaseConnection->query('ALTER TABLE `ho...')
+#4 C:\xampp\htdocs\V-Track\app\Database\Migrations\2025-11-03-101000_AddLocationColumnsToHomes.php(16): CodeIgniter\Database\Forge->addColumn('homes', Array)
+#5 C:\xampp\htdocs\V-Track\system\Database\MigrationRunner.php(876): App\Database\Migrations\AddLocationColumnsToHomes->up()
+#6 C:\xampp\htdocs\V-Track\system\Database\MigrationRunner.php(182): CodeIgniter\Database\MigrationRunner->migrate('up', Object(stdClass))
+#7 C:\xampp\htdocs\V-Track\system\Commands\Database\Migrate.php(85): CodeIgniter\Database\MigrationRunner->latest('App')
+#8 C:\xampp\htdocs\V-Track\system\CLI\Commands.php(74): CodeIgniter\Commands\Database\Migrate->run(Array)
+#9 C:\xampp\htdocs\V-Track\system\CLI\BaseCommand.php(119): CodeIgniter\CLI\Commands->run('migrate', Array)
+#10 C:\xampp\htdocs\V-Track\system\Commands\Database\MigrateRefresh.php(87): CodeIgniter\CLI\BaseCommand->call('migrate', Array)
+#11 C:\xampp\htdocs\V-Track\system\CLI\Commands.php(74): CodeIgniter\Commands\Database\MigrateRefresh->run(Array)
+#12 C:\xampp\htdocs\V-Track\system\CLI\Console.php(47): CodeIgniter\CLI\Commands->run('migrate:refresh', Array)
+#13 C:\xampp\htdocs\V-Track\system\Boot.php(388): CodeIgniter\CLI\Console->run()
+#14 C:\xampp\htdocs\V-Track\system\Boot.php(133): CodeIgniter\Boot::runCommand(Object(CodeIgniter\CLI\Console))
+#15 C:\xampp\htdocs\V-Track\spark(87): CodeIgniter\Boot::bootSpark(Object(Config\Paths))
+#16 {main}
+ERROR - 2025-11-03 05:02:08 --> SQLite3Exception: duplicate column name: road_id in C:\xampp\htdocs\V-Track\system\Database\SQLite3\Connection.php:175
+Stack trace:
+#0 C:\xampp\htdocs\V-Track\system\Database\SQLite3\Connection.php(175): SQLite3->exec('ALTER TABLE `ho...')
+#1 C:\xampp\htdocs\V-Track\system\Database\BaseConnection.php(729): CodeIgniter\Database\SQLite3\Connection->execute('ALTER TABLE `ho...')
+#2 C:\xampp\htdocs\V-Track\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('ALTER TABLE `ho...')
+#3 C:\xampp\htdocs\V-Track\system\Database\Forge.php(772): CodeIgniter\Database\BaseConnection->query('ALTER TABLE `ho...')
+#4 C:\xampp\htdocs\V-Track\app\Database\Migrations\2025-11-03-101000_AddLocationColumnsToHomes.php(16): CodeIgniter\Database\Forge->addColumn('homes', Array)
+#5 C:\xampp\htdocs\V-Track\system\Database\MigrationRunner.php(876): App\Database\Migrations\AddLocationColumnsToHomes->up()
+#6 C:\xampp\htdocs\V-Track\system\Database\MigrationRunner.php(182): CodeIgniter\Database\MigrationRunner->migrate('up', Object(stdClass))
+#7 C:\xampp\htdocs\V-Track\system\Commands\Database\Migrate.php(85): CodeIgniter\Database\MigrationRunner->latest(NULL)
+#8 C:\xampp\htdocs\V-Track\system\CLI\Commands.php(74): CodeIgniter\Commands\Database\Migrate->run(Array)
+#9 C:\xampp\htdocs\V-Track\system\CLI\Console.php(47): CodeIgniter\CLI\Commands->run('migrate', Array)
+#10 C:\xampp\htdocs\V-Track\system\Boot.php(388): CodeIgniter\CLI\Console->run()
+#11 C:\xampp\htdocs\V-Track\system\Boot.php(133): CodeIgniter\Boot::runCommand(Object(CodeIgniter\CLI\Console))
+#12 C:\xampp\htdocs\V-Track\spark(87): CodeIgniter\Boot::bootSpark(Object(Config\Paths))
+#13 {main}

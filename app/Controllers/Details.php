@@ -30,7 +30,15 @@ class Details extends Controller
             $addresses = [];
         }
 
-        return view('add_details', ['roads' => $roads, 'sub_roads' => $subRoads, 'addresses' => $addresses]);
+        // Also provide a small list of existing homes for the "Add to Existing Home" flow
+        $homes = [];
+        try {
+            $homes = $db->table('homes')->select('id,address')->orderBy('id','desc')->get()->getResultArray();
+        } catch (\Exception $e) {
+            $homes = [];
+        }
+
+        return view('add_details', ['roads' => $roads, 'sub_roads' => $subRoads, 'addresses' => $addresses, 'homes' => $homes]);
     }
 
     public function store()
@@ -40,12 +48,11 @@ class Details extends Controller
         $memberModel = new MemberModel();
 
         // Determine whether we're adding to an existing home or creating a new one
-        $addToExisting = $this->request->getPost('add_to_existing') === '1' ? true : false;
-        $existingHomeNumber = $this->request->getPost('existing_home_number_hidden');
+    $addToExisting = $this->request->getPost('add_to_existing') === '1' ? true : false;
+    $existingHomeId = $this->request->getPost('existing_home_id_hidden');
 
         // Basic home data (for new home case)
         $data = [
-            'home_number'    => $this->request->getPost('home_number'),
             'address'        => $this->request->getPost('address'),
             'road_id'        => $this->request->getPost('road_id') ?: null,
             'sub_road_id'    => $this->request->getPost('sub_road_id') ?: null,
@@ -59,16 +66,16 @@ class Details extends Controller
 
         // If adding to an existing home, validate the provided existing home number and find the home
         if ($addToExisting) {
-            if (empty($existingHomeNumber)) {
-                return redirect()->back()->with('error', 'Existing house number is required when adding to an existing home.');
+            if (empty($existingHomeId)) {
+                return redirect()->back()->with('error', 'Please select an existing home to add members to.');
             }
-            $existingHome = $homeModel->where('home_number', $existingHomeNumber)->first();
+            $existingHome = $homeModel->find((int) $existingHomeId);
             if (!$existingHome) {
-                return redirect()->back()->with('error', 'No home found with that house number.');
+                return redirect()->back()->with('error', 'Selected home not found.');
             }
             $homeId = $existingHome['id'];
         } else {
-            // New home flow: require home_number (road) and address selection
+            // New home flow: require road and address selection
             // If an address_id was provided, translate it to text for the `address` column
             if (!empty($data['address_id'])) {
                 try {

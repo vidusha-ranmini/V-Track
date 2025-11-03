@@ -553,7 +553,7 @@
             hiddenMembers.value = JSON.stringify(members);
             // include home mode info so server can decide whether to create a new home or add members to an existing one
             var mode = form.querySelector('[name="home_mode"]:checked').value;
-            var existingHome = form.querySelector('[name="existing_home_number"]') ? form.querySelector('[name="existing_home_number"]').value.trim() : '';
+            var existingHome = form.querySelector('[name="existing_home_id"]') ? form.querySelector('[name="existing_home_id"]').value : '';
             // create or update hidden fields for server
             var modeField = form.querySelector('input[name="add_to_existing"]');
             if (!modeField) {
@@ -562,19 +562,19 @@
                 form.appendChild(modeField);
             }
             modeField.value = (mode === 'existing') ? '1' : '0';
-            var existingField = form.querySelector('input[name="existing_home_number_hidden"]');
+            var existingField = form.querySelector('input[name="existing_home_id_hidden"]');
             if (!existingField) {
                 existingField = document.createElement('input');
-                existingField.type = 'hidden'; existingField.name = 'existing_home_number_hidden';
+                existingField.type = 'hidden'; existingField.name = 'existing_home_id_hidden';
                 form.appendChild(existingField);
             }
             existingField.value = existingHome;
 
-            // Basic client-side validation: when adding to existing, require an existing home number
+            // Basic client-side validation: when adding to existing, require an existing home selection
             if (mode === 'existing' && !existingHome) {
                 e.preventDefault();
-                messageDiv.textContent = 'Please enter the existing house number to add members to.';
-                try { showToast('error', 'Enter existing house number'); } catch(e) {}
+                messageDiv.textContent = 'Please select an existing home to add members to.';
+                try { showToast('error', 'Select existing home'); } catch(e) {}
                 return;
             }
             messageDiv.textContent = '';
@@ -592,8 +592,15 @@
                     <label style="display:inline-flex;align-items:center;gap:6px;"><input type="radio" name="home_mode" value="new" checked> New Home</label>
                     <label style="display:inline-flex;align-items:center;gap:6px;"><input type="radio" name="home_mode" value="existing"> Add to Existing Home</label>
                     <div id="existing-home-input" style="display:none;margin-left:12px;">
-                        <input type="text" name="existing_home_number" placeholder="Enter existing house number">
-                        <small style="color:#666;display:block">Enter the house number of the existing home to add members to.</small>
+                        <select name="existing_home_id">
+                            <option value="">Select existing home</option>
+                            <?php if (isset($homes) && is_array($homes)): ?>
+                                <?php foreach ($homes as $h): ?>
+                                    <option value="<?= esc($h['id']) ?>"><?= esc($h['address']) ?> (ID: <?= esc($h['id']) ?>)</option>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </select>
+                        <small style="color:#666;display:block">Select an existing home to append members to.</small>
                     </div>
                 </div>
                 <div class="form-row">

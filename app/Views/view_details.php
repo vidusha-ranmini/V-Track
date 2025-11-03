@@ -156,8 +156,8 @@
         <h2 style="color:#070d69ff;margin-bottom:24px;">View Family & Member Details</h2>
         <div class="filter-row">
             <div class="filter-group">
-                <label for="filter-house">House Number</label>
-                <input type="text" id="filter-house" placeholder="Search by house number">
+                <label for="filter-house">Location</label>
+                <input type="text" id="filter-house" placeholder="Search by location">
             </div>
             <div class="filter-group">
                 <label for="filter-address">Address</label>
@@ -208,7 +208,7 @@
             <table class="details-table" id="details-table">
                 <thead>
                     <tr>
-                        <th>House No</th>
+                        <th>Location</th>
                         <th>Resident Type</th>
                         <th>Member Name</th>
                         <th>Occupation</th>
@@ -429,7 +429,7 @@
         detailsData.forEach((family, famIdx) => {
             family.members.forEach((member, memIdx) => {
                 if (
-                    (!filters.house || family.house_number.toLowerCase().includes(filters.house)) &&
+                    (!filters.house || (family.location || '').toLowerCase().includes(filters.house)) &&
                     (!filters.address || family.address.toLowerCase().includes(filters.address)) &&
                     (!filters.name || member.name.toLowerCase().includes(filters.name)) &&
                     (!filters.occupation || member.occupation === filters.occupation) &&
@@ -440,7 +440,7 @@
                     rowData.push({family, member, famIdx, memIdx});
                     const tr = document.createElement('tr');
                     tr.innerHTML =
-                        `<td>${family.house_number}</td>` +
+                        `<td>${family.location}</td>` +
                         `<td>${family.resident_type.charAt(0).toUpperCase() + family.resident_type.slice(1)}</td>` +
                         `<td>${member.name}</td>` +
                         `<td>${capitalize(member.occupation)}</td>` +
@@ -463,9 +463,9 @@
         var modal = document.getElementById('details-modal');
         var body = document.getElementById('details-modal-body');
         if (!modal || !body) return;
-        body.innerHTML = `
+            body.innerHTML = `
             <h3 style="color:#070d69ff;margin-top:0;">Full Member Details</h3>
-            <div style="margin-bottom:12px;"><strong>House Number:</strong> ${family.house_number}</div>
+            <div style="margin-bottom:12px;"><strong>Location:</strong> ${family.location}</div>
             <div style="margin-bottom:12px;"><strong>Address:</strong> ${family.address}</div>
             <div style="margin-bottom:12px;"><strong>Resident Type:</strong> ${capitalize(family.resident_type)}</div>
             <div style="margin-bottom:12px;"><strong>Member Name:</strong> ${member.name}</div>
