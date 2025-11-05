@@ -19,22 +19,20 @@ class Login extends Controller
         $session = session();
         $username = $this->request->getPost('username');
         $password = $this->request->getPost('password');
-        // Debug: Log the database file path being used
-        $db = \Config\Database::connect();
-        $dbPath = $db->getDatabase();
-        log_message('debug', 'Database file path: ' . $dbPath);
+        
         $userModel = new UserModel();
         $user = $userModel->getUserByUsername($username);
 
-        // The database stores plain-text passwords; compare directly.
-        if ($user && isset($user['password']) && $user['password'] === $password) {
-            $session->set(['isLoggedIn' => true, 'username' => $username]);
+        // Verify hashed password
+        if ($user && isset($user['password']) && password_verify($password, $user['password'])) {
+            $session->set([
+                'isLoggedIn' => true,
+                'user_id' => $user['user_id'],
+                'username' => $user['user_name']
+            ]);
             return redirect()->to(base_url('sidebar'));
         } else {
-            // Log more details for debugging without exposing the actual password value
-            $found = $user ? 'yes' : 'no';
-            $storedPw = ($user && isset($user['password'])) ? 'present' : 'missing';
-            log_message('error', 'Login failed for username: ' . $username . '. User found: ' . $found . ', Stored password: ' . $storedPw);
+            log_message('error', 'Login failed for username: ' . $username);
             return view('login', ['error' => 'Invalid username or password']);
         }
     }

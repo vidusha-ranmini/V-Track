@@ -7,8 +7,12 @@ class RemoveHomeNumberFromHomes extends Migration
 {
     public function up()
     {
-        // SQLite does not support DROP COLUMN directly; recreate the table without `home_number`.
-        $sql = <<<'SQL'
+        // Check if we're using SQLite or MySQL and handle accordingly
+        $driver = $this->db->DBDriver;
+
+        if ($driver === 'SQLite3') {
+            // SQLite does not support DROP COLUMN directly; recreate the table without `home_number`.
+            $sql = <<<'SQL'
 BEGIN TRANSACTION;
 CREATE TABLE IF NOT EXISTS homes_new (
     id INTEGER PRIMARY KEY,
@@ -29,12 +33,17 @@ ALTER TABLE homes_new RENAME TO homes;
 COMMIT;
 SQL;
 
-        try {
-            $this->db->query($sql);
-        } catch (\Exception $e) {
-            // If something goes wrong, log the error and rethrow
-            log_message('error', 'RemoveHomeNumberFromHomes migration failed: ' . $e->getMessage());
-            throw $e;
+            try {
+                $this->db->query($sql);
+            } catch (\Exception $e) {
+                log_message('error', 'RemoveHomeNumberFromHomes migration failed: ' . $e->getMessage());
+                throw $e;
+            }
+        } else {
+            // MySQL/MariaDB: use ALTER TABLE DROP COLUMN if home_number column exists
+            if ($this->db->fieldExists('home_number', 'homes')) {
+                $this->forge->dropColumn('homes', 'home_number');
+            }
         }
     }
 

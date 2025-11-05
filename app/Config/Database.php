@@ -17,7 +17,9 @@ class Database extends Config
     /**
      * Lets you choose which connection group to use if no other is specified.
      */
-    public string $defaultGroup = 'default';
+    // Switch to 'mysql' to use MySQL / MariaDB as the active connection.
+    // Update the credentials in $mysql below to match your MySQL server.
+    public string $defaultGroup = 'mysql';
 
     /**
      * The default database connection.
@@ -48,6 +50,31 @@ class Database extends Config
         'foreignKeys' => true,
         // Increase busy timeout (milliseconds) so writers wait instead of failing when DB is locked
         'busyTimeout' => 2000,
+    ];
+
+    /**
+     * MySQL / MariaDB connection. Update hostname/username/password/database
+     * to match your MySQL server. This group is selected when
+     * $defaultGroup = 'mysql'.
+     */
+    public array $mysql = [
+        'DSN'      => '',
+        'hostname' => '127.0.0.1',
+        'username' => 'root',
+        'password' => '',
+        'database' => 'v_track',
+        'DBDriver' => 'MySQLi',
+        'DBPrefix' => '',
+        'pConnect' => false,
+        'DBDebug'  => true,
+        'charset'  => 'utf8mb4',
+        'DBCollat' => 'utf8mb4_general_ci',
+        'swapPre'  => '',
+        'encrypt'  => false,
+        'compress' => false,
+        'strictOn' => false,
+        'failover' => [],
+        'port'     => 3306,
     ];
     //    /**
     //     * Sample database connection for SQLite3.

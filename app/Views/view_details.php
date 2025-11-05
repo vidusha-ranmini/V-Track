@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>V-Track</title>
+    <?= csrf_meta() ?>
     <link rel="stylesheet" href="<?= base_url('styles.css') ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
@@ -156,8 +157,16 @@
         <h2 style="color:#070d69ff;margin-bottom:24px;">View Family & Member Details</h2>
         <div class="filter-row">
             <div class="filter-group">
-                <label for="filter-house">Location</label>
-                <input type="text" id="filter-house" placeholder="Search by location">
+                <label for="filter-road">Road</label>
+                <select id="filter-road">
+                    <option value="">All</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="filter-subroad">Sub Road</label>
+                <select id="filter-subroad">
+                    <option value="">All</option>
+                </select>
             </div>
             <div class="filter-group">
                 <label for="filter-address">Address</label>
@@ -411,13 +420,125 @@
             try { container.removeChild(toast); } catch (e) {}
         }, timeout);
     }
+    <?php
+    // If controller didn't pass $detailsData, load it here so the page always reflects
+    // the server-side DB (useful when debugging differences between CLI vs web).
+    if (!isset($detailsData)) {
+        $model = new \App\Models\ViewDetailsModel();
+        $families = $model->getAllFamilies();
+        $detailsData = json_encode($families, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+        $serverMembersCount = 0;
+        foreach ($families as $f) { $serverMembersCount += count($f['members']); }
+    } else {
+        $tmp = json_decode($detailsData, true) ?: [];
+        $serverMembersCount = 0;
+        foreach ($tmp as $f) { $serverMembersCount += count($f['members']); }
+    }
+    
+    
+        // Ensure we don't reference undefined variables when the controller
+        // did not pass the DB-backed arrays. Prefer controller-provided
+        // variables ($roadsJson, $subRoadMapJson). Fall back to any
+        // precomputed arrays ($roadNames, $subRoadMapByRoadName) or safe
+        // empty defaults.
+        if (!isset($roadsJson)) {
+            if (isset($roadNames) && is_array($roadNames)) {
+                $roadsJson = json_encode(array_values(array_unique($roadNames)), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+            } else {
+                $roadsJson = '[]';
+            }
+        }
+        if (!isset($subRoadMapJson)) {
+            if (isset($subRoadMapByRoadName) && is_array($subRoadMapByRoadName)) {
+                $subRoadMapJson = json_encode($subRoadMapByRoadName, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+            } else {
+                $subRoadMapJson = '{}';
+            }
+        }
+    ?>
+    <div style="display:none" id="server-members-count"><?= $serverMembersCount ?></div>
     // Data provided by controller (JSON encoded). Falls back to empty array when not provided.
-    const detailsData = <?= isset($detailsData) ? $detailsData : '[]' ?>;
+    const detailsData = <?= $detailsData ?? '[]' ?>;
+    const roadsFromDb = <?= $roadsJson ?? '[]' ?>;
+    const subRoadMapFromDb = <?= $subRoadMapJson ?? '{}' ?>;
+
+    // Helper to supply CSRF header for AJAX requests when CSRF protection is active.
+    function getCsrfHeaders() {
+        try {
+            var meta = document.querySelector('meta[name="<?= csrf_header() ?>"]');
+            var hdrName = meta ? meta.getAttribute('name') : 'X-CSRF-TOKEN';
+            var tok = meta ? meta.getAttribute('content') : '';
+            var h = { 'X-Requested-With': 'XMLHttpRequest' };
+            if (tok) h[hdrName] = tok;
+            return h;
+        } catch (e) { return { 'X-Requested-With': 'XMLHttpRequest' }; }
+    }
+
+    // Wrap main script in try/catch so runtime errors are visible and don't fail silently
+    try {
+        // Quick debug logs to help identify mismatches between DB and UI
+        console.log('server-members-count=', document.getElementById('server-members-count') ? document.getElementById('server-members-count').innerText : 'n/a');
+        console.log('roadsFromDb=', roadsFromDb);
+        console.log('subRoadMapFromDb=', subRoadMapFromDb);
+
+    // Build Road and Sub-road dropdown options — prefer DB-backed lists, fall back to detailsData
+    (function buildRoadSubroadFilters() {
+        try {
+            const roadSel = document.getElementById('filter-road');
+            const subSel = document.getElementById('filter-subroad');
+
+            // Use DB-provided roads when available
+            let roads = Array.isArray(roadsFromDb) && roadsFromDb.length ? roadsFromDb.slice() : [];
+            if (!roads.length) {
+                // derive from detailsData as a fallback
+                const rs = new Set();
+                detailsData.forEach(f => { const parts = (f.location||'').split('/').map(s=>s.trim()); if (parts[0]) rs.add(parts[0]); });
+                roads = Array.from(rs).sort();
+            }
+
+            // Populate road select
+            if (roadSel) {
+                roads.forEach(r => { const o = document.createElement('option'); o.value = r; o.text = r; roadSel.appendChild(o); });
+            }
+
+            // Populate sub-road select with DB union or derived set
+            let initialSubs = [];
+            if (subRoadMapFromDb && Object.keys(subRoadMapFromDb).length) {
+                const sset = new Set();
+                Object.values(subRoadMapFromDb).forEach(arr => arr.forEach(s => s && sset.add(s)));
+                initialSubs = Array.from(sset).sort();
+            } else {
+                const sset = new Set();
+                detailsData.forEach(f => { const parts = (f.location||'').split('/').map(s=>s.trim()); if (parts[1]) sset.add(parts[1]); });
+                initialSubs = Array.from(sset).sort();
+            }
+            if (subSel) initialSubs.forEach(s => { const o = document.createElement('option'); o.value = s; o.text = s; subSel.appendChild(o); });
+
+            // When road changes, limit sub-road options to those present under the selected road.
+            if (roadSel && subSel) {
+                roadSel.addEventListener('change', function(){
+                    const chosen = this.value;
+                    subSel.innerHTML = '<option value="">All</option>';
+                    const subs = new Set();
+                    if (subRoadMapFromDb && subRoadMapFromDb[chosen]) {
+                        subRoadMapFromDb[chosen].forEach(s => s && subs.add(s));
+                    } else {
+                        detailsData.forEach(f => { const parts = (f.location||'').split('/').map(s=>s.trim()); if (!chosen || parts[0] === chosen) { if (parts[1]) subs.add(parts[1]); } });
+                    }
+                    Array.from(subs).sort().forEach(s => { const o = document.createElement('option'); o.value = s; o.text = s; subSel.appendChild(o); });
+                    renderTable();
+                });
+            }
+            if (subSel) subSel.addEventListener('change', renderTable);
+        } catch(e) { console.error('Failed to build road/subroad filters', e); }
+    })();
+
     function renderTable() {
         const tbody = document.querySelector('#details-table tbody');
         tbody.innerHTML = '';
         let filters = {
-            house: document.getElementById('filter-house').value.toLowerCase(),
+            road: (document.getElementById('filter-road') ? document.getElementById('filter-road').value.toLowerCase() : ''),
+            subroad: (document.getElementById('filter-subroad') ? document.getElementById('filter-subroad').value.toLowerCase() : ''),
             address: document.getElementById('filter-address').value.toLowerCase(),
             name: document.getElementById('filter-name').value.toLowerCase(),
             occupation: document.getElementById('filter-occupation').value,
@@ -429,7 +550,8 @@
         detailsData.forEach((family, famIdx) => {
             family.members.forEach((member, memIdx) => {
                 if (
-                    (!filters.house || (family.location || '').toLowerCase().includes(filters.house)) &&
+                    (!filters.road || (family.location || '').toLowerCase().split('/')[0].trim().includes(filters.road)) &&
+                    (!filters.subroad || (family.location || '').toLowerCase().split('/')[1] && family.location.toLowerCase().split('/')[1].trim().includes(filters.subroad)) &&
                     (!filters.address || family.address.toLowerCase().includes(filters.address)) &&
                     (!filters.name || member.name.toLowerCase().includes(filters.name)) &&
                     (!filters.occupation || member.occupation === filters.occupation) &&
@@ -543,7 +665,7 @@
         confirmBtn.onclick = function() {
             // perform deletion
             confirmBtn.disabled = true; cancelBtn.disabled = true;
-            fetch('<?= base_url('member/delete') ?>/' + member.id, { method: 'POST', credentials: 'same-origin', headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+            fetch('<?= base_url('member/delete') ?>/' + member.id, { method: 'POST', credentials: 'same-origin', headers: getCsrfHeaders() })
                 .then(response => {
                     if (!response.ok) throw response;
                     return response.json().catch(()=>({ success: true }));
@@ -653,8 +775,8 @@
     var fd = new FormData(form);
     // include file if provided (cv_file)
     // send as multipart/form-data
-        fetch('<?= base_url('member/update') ?>', { method: 'POST', body: fd })
-            .then(r => { if (!r.ok) throw new Error('Update failed'); return r.json(); })
+        fetch('<?= base_url('member/update') ?>', { method: 'POST', credentials: 'same-origin', headers: getCsrfHeaders(), body: fd })
+            .then(r => { if (!r.ok) throw r; return r.json().catch(()=>({ success: true })); })
             .then(j => { 
                 // hide modal via class so CSS takes effect
                 var modal = document.getElementById('edit-modal');
@@ -682,6 +804,10 @@
         el.addEventListener('change', renderTable);
     });
     renderTable();
+    } catch (e) {
+        console.error('ViewDetails JS error', e);
+        try { showToast('error', 'A page error occurred: ' + (e && e.message ? e.message : 'see console')); } catch (ee) { console.error('Toast failed', ee); }
+    }
     </script>
 </body>
 </html>

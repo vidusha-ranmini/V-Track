@@ -88,6 +88,10 @@ class Pages extends Controller
     }
     public function view_details()
     {
-        return view('view_details');
+        // Ensure this route always uses the ViewDetails controller which prepares
+        // the DB-backed road/sub-road data. Redirect here to avoid rendering the
+        // view without the required JS variables when Pages::view_details is
+        // invoked directly.
+        return redirect()->to('/view-details');
     }
 }
