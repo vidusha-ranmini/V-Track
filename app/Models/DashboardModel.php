@@ -74,13 +74,13 @@ class DashboardModel
     public function getWasteCounts(): array
     {
         $rows = $this->db->table('homes')
-            ->select('waste_disposal, COUNT(*) AS cnt')
-            ->groupBy('waste_disposal')
+            ->select('waste_collector, COUNT(*) AS cnt')
+            ->groupBy('waste_collector')
             ->get()
             ->getResultArray();
 
         $labels = [];$data = [];
-        foreach ($rows as $r) { $labels[] = $r['waste_disposal']; $data[] = (int)$r['cnt']; }
+        foreach ($rows as $r) { $labels[] = $r['waste_collector']; $data[] = (int)$r['cnt']; }
         return ['labels' => $labels, 'data' => $data];
     }
 
