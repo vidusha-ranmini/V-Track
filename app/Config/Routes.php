@@ -22,3 +22,9 @@ $routes->get('dashboard/report', 'Pages::generateReport');
 // Member edit/delete endpoints
 $routes->post('member/update', 'MemberController::update');
 $routes->post('member/delete/(:num)', 'MemberController::delete/$1');
+// Business routes
+$routes->get('add-business', 'Business::create');
+$routes->post('add-business', 'Business::store');
+$routes->get('business/get/(:num)', 'Business::get/$1');
+$routes->post('business/update', 'Business::update');
+$routes->post('business/delete/(:num)', 'Business::delete/$1');
