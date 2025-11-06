@@ -44,8 +44,8 @@ class ViewDetailsModel
             }
         }
 
-        // Select road/sub-road/address names where available and fall back to home's address column
-        $select = 'h.id AS home_id, h.address AS home_address, h.resident_type, '
+        // Select road/sub-road/address names from the normalized tables
+        $select = 'h.id AS home_id, h.resident_type, '
             . 'r.name AS road_name, sr.name AS sub_road_name, a.address AS address_line, '
             . implode(', ', $memberFields) . ', mo.offer';
 
@@ -68,8 +68,8 @@ class ViewDetailsModel
                 $parts = [];
                 if (!empty($row['road_name'])) $parts[] = $row['road_name'];
                 if (!empty($row['sub_road_name'])) $parts[] = $row['sub_road_name'];
-                // prefer the normalized address line when available, otherwise home's address
-                $addrLine = !empty($row['address_line']) ? $row['address_line'] : (!empty($row['home_address']) ? $row['home_address'] : '');
+                // Use the normalized address line from addresses table
+                $addrLine = !empty($row['address_line']) ? $row['address_line'] : '';
                 if (!empty($addrLine)) $parts[] = $addrLine;
                 $location = implode(' / ', $parts);
 

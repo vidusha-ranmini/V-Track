@@ -155,6 +155,26 @@
 <body>
     <div class="view-details-container">
         <h2 style="color:#070d69ff;margin-bottom:24px;">View Family & Member Details</h2>
+        
+        <?php if (isset($detailsData)): ?>
+            <?php
+            // Debug output - show what data was passed
+            $tmpData = json_decode($detailsData, true);
+            $totalFamilies = is_array($tmpData) ? count($tmpData) : 0;
+            $totalMembers = 0;
+            if (is_array($tmpData)) {
+                foreach ($tmpData as $fam) {
+                    if (isset($fam['members']) && is_array($fam['members'])) {
+                        $totalMembers += count($fam['members']);
+                    }
+                }
+            }
+            ?>
+            <div style="background:#e3f2fd;padding:8px 12px;border-radius:6px;margin-bottom:16px;font-size:0.9rem;">
+                <strong>Data loaded:</strong> <?= $totalFamilies ?> families, <?= $totalMembers ?> members
+            </div>
+        <?php endif; ?>
+        
         <div class="filter-row">
             <div class="filter-group">
                 <label for="filter-road">Road</label>
@@ -477,7 +497,26 @@
     // Wrap main script in try/catch so runtime errors are visible and don't fail silently
     try {
         // Quick debug logs to help identify mismatches between DB and UI
+        console.log('=== VIEW DETAILS DEBUG ===');
+        console.log('detailsData:', detailsData);
+        console.log('detailsData length:', detailsData.length);
         console.log('server-members-count=', document.getElementById('server-members-count') ? document.getElementById('server-members-count').innerText : 'n/a');
+        
+        // Check each family
+        if (detailsData.length > 0) {
+            detailsData.forEach((fam, idx) => {
+                console.log(`Family ${idx}:`, fam);
+                console.log(`  Members count: ${fam.members ? fam.members.length : 0}`);
+                if (fam.members && fam.members.length > 0) {
+                    fam.members.forEach((mem, midx) => {
+                        console.log(`    Member ${midx}:`, mem.name, mem.occupation);
+                    });
+                }
+            });
+        } else {
+            console.warn('⚠️  detailsData is EMPTY!');
+        }
+        
         console.log('roadsFromDb=', roadsFromDb);
         console.log('subRoadMapFromDb=', subRoadMapFromDb);
 
@@ -534,6 +573,7 @@
     })();
 
     function renderTable() {
+        console.log('renderTable() called');
         const tbody = document.querySelector('#details-table tbody');
         tbody.innerHTML = '';
         let filters = {
@@ -545,38 +585,50 @@
             offers: document.getElementById('filter-offers').value,
             resident: document.getElementById('filter-resident').value
         };
+        console.log('Filters:', filters);
         let found = false;
         let rowData = [];
+        console.log('Processing', detailsData.length, 'families');
         detailsData.forEach((family, famIdx) => {
+            console.log(`Family ${famIdx}:`, family, `Members:`, family.members);
+            if (!family.members || !Array.isArray(family.members)) {
+                console.warn(`Family ${famIdx} has no members array!`);
+                return;
+            }
             family.members.forEach((member, memIdx) => {
+                console.log(`  Checking member ${memIdx}:`, member.name);
                 if (
                     (!filters.road || (family.location || '').toLowerCase().split('/')[0].trim().includes(filters.road)) &&
                     (!filters.subroad || (family.location || '').toLowerCase().split('/')[1] && family.location.toLowerCase().split('/')[1].trim().includes(filters.subroad)) &&
-                    (!filters.address || family.address.toLowerCase().includes(filters.address)) &&
-                    (!filters.name || member.name.toLowerCase().includes(filters.name)) &&
+                    (!filters.address || (family.address || '').toLowerCase().includes(filters.address)) &&
+                    (!filters.name || (member.name || '').toLowerCase().includes(filters.name)) &&
                     (!filters.occupation || member.occupation === filters.occupation) &&
-                    (!filters.offers || member.offers.includes(filters.offers)) &&
+                    (!filters.offers || (member.offers && member.offers.includes(filters.offers))) &&
                     (!filters.resident || family.resident_type === filters.resident)
                 ) {
+                    console.log(`    ✓ Member ${member.name} matches filters - adding to table`);
                     found = true;
                     rowData.push({family, member, famIdx, memIdx});
                     const tr = document.createElement('tr');
                     tr.innerHTML =
-                        `<td>${family.location}</td>` +
-                        `<td>${family.resident_type.charAt(0).toUpperCase() + family.resident_type.slice(1)}</td>` +
-                        `<td>${member.name}</td>` +
-                        `<td>${capitalize(member.occupation)}</td>` +
-                        `<td>${member.offers.map(capitalizeOffer).join(', ')}</td>` +
-                        `<td>${member.nic}</td>` +
-                        `<td>${member.whatsapp}</td>`;
+                        `<td>${family.location || ''}</td>` +
+                        `<td>${family.resident_type ? (family.resident_type.charAt(0).toUpperCase() + family.resident_type.slice(1)) : ''}</td>` +
+                        `<td>${member.name || ''}</td>` +
+                        `<td>${member.occupation ? capitalize(member.occupation) : ''}</td>` +
+                        `<td>${(member.offers && Array.isArray(member.offers)) ? member.offers.map(capitalizeOffer).join(', ') : ''}</td>` +
+                        `<td>${member.nic || ''}</td>` +
+                        `<td>${member.whatsapp || ''}</td>`;
                     tr.style.cursor = 'pointer';
                     tr.addEventListener('click', function() {
                         showDetailsCard(family, member);
                     });
                     tbody.appendChild(tr);
+                } else {
+                    console.log(`    ✗ Member ${member.name} filtered out`);
                 }
             });
         });
+        console.log(`Render complete: ${found ? 'Found rows' : 'No rows found'}, Total rows added: ${rowData.length}`);
         document.getElementById('no-data').style.display = found ? 'none' : 'block';
         if (!found) document.getElementById('details-card').style.display = 'none';
     }
