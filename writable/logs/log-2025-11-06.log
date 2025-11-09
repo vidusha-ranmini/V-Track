@@ -117,3 +117,175 @@ DEBUG - 2025-11-06 05:48:09 --> Session: Class initialized using 'CodeIgniter\Se
 DEBUG - 2025-11-06 05:48:14 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
 DEBUG - 2025-11-06 05:48:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
 DEBUG - 2025-11-06 05:55:53 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-06 06:32:23 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-06 06:35:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-06 06:35:28 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-06 06:35:28 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-06 06:44:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-06 06:44:16 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-06 06:44:16 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-06 06:48:24 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-06 06:50:37 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-06 06:54:56 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-06 06:56:31 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-06 07:27:31 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-06 07:39:02 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-06 08:01:36 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-06 08:14:28 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+ERROR - 2025-11-06 08:14:36 --> mysqli_sql_exception: Unknown column 'address' in 'field list' in C:\xampp\htdocs\V-Track\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\V-Track\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `id`, `a...', 0)
+#1 C:\xampp\htdocs\V-Track\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `id`, `a...')
+#2 C:\xampp\htdocs\V-Track\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `id`, `a...')
+#3 C:\xampp\htdocs\V-Track\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `id`, `a...', Array, false)
+#4 C:\xampp\htdocs\V-Track\app\Controllers\Details.php(36): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(933): App\Controllers\Details->create()
+#6 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Details))
+#7 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\V-Track\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\V-Track\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\V-Track\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+ERROR - 2025-11-06 08:14:40 --> mysqli_sql_exception: Unknown column 'address' in 'field list' in C:\xampp\htdocs\V-Track\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\V-Track\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `id`, `a...', 0)
+#1 C:\xampp\htdocs\V-Track\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `id`, `a...')
+#2 C:\xampp\htdocs\V-Track\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `id`, `a...')
+#3 C:\xampp\htdocs\V-Track\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `id`, `a...', Array, false)
+#4 C:\xampp\htdocs\V-Track\app\Controllers\Details.php(36): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(933): App\Controllers\Details->create()
+#6 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Details))
+#7 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\V-Track\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\V-Track\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\V-Track\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+DEBUG - 2025-11-06 08:14:54 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-06 08:15:00 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-06 08:15:00 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+ERROR - 2025-11-06 15:51:39 --> mysqli_sql_exception: Unknown column 'address' in 'field list' in C:\xampp\htdocs\V-Track\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\V-Track\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `id`, `a...', 0)
+#1 C:\xampp\htdocs\V-Track\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `id`, `a...')
+#2 C:\xampp\htdocs\V-Track\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `id`, `a...')
+#3 C:\xampp\htdocs\V-Track\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `id`, `a...', Array, false)
+#4 C:\xampp\htdocs\V-Track\app\Controllers\Details.php(36): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(933): App\Controllers\Details->create()
+#6 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Details))
+#7 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\V-Track\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\V-Track\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\V-Track\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+WARNING - 2025-11-06 15:51:45 --> [DEPRECATED] fputcsv(): the $escape parameter must be provided as its default value will change in APPPATH\Controllers\Pages.php on line 68.
+ 1 APPPATH\Controllers\Pages.php(68): fputcsv(resource (stream), [...])
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Pages->generateReport()
+ 3 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Pages))
+ 4 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+WARNING - 2025-11-06 15:51:45 --> [DEPRECATED] fputcsv(): the $escape parameter must be provided as its default value will change in APPPATH\Controllers\Pages.php on line 76.
+ 1 APPPATH\Controllers\Pages.php(76): fputcsv(resource (stream), [...])
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Pages->generateReport()
+ 3 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Pages))
+ 4 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+WARNING - 2025-11-06 15:51:45 --> [DEPRECATED] fputcsv(): the $escape parameter must be provided as its default value will change in APPPATH\Controllers\Pages.php on line 76.
+ 1 APPPATH\Controllers\Pages.php(76): fputcsv(resource (stream), [...])
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Pages->generateReport()
+ 3 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Pages))
+ 4 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+WARNING - 2025-11-06 15:51:45 --> [DEPRECATED] fputcsv(): the $escape parameter must be provided as its default value will change in APPPATH\Controllers\Pages.php on line 76.
+ 1 APPPATH\Controllers\Pages.php(76): fputcsv(resource (stream), [...])
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Pages->generateReport()
+ 3 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Pages))
+ 4 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+WARNING - 2025-11-06 15:51:45 --> [DEPRECATED] fputcsv(): the $escape parameter must be provided as its default value will change in APPPATH\Controllers\Pages.php on line 76.
+ 1 APPPATH\Controllers\Pages.php(76): fputcsv(resource (stream), [...])
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Pages->generateReport()
+ 3 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Pages))
+ 4 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+WARNING - 2025-11-06 15:51:45 --> [DEPRECATED] fputcsv(): the $escape parameter must be provided as its default value will change in APPPATH\Controllers\Pages.php on line 76.
+ 1 APPPATH\Controllers\Pages.php(76): fputcsv(resource (stream), [...])
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Pages->generateReport()
+ 3 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Pages))
+ 4 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+WARNING - 2025-11-06 15:51:45 --> [DEPRECATED] fputcsv(): the $escape parameter must be provided as its default value will change in APPPATH\Controllers\Pages.php on line 76.
+ 1 APPPATH\Controllers\Pages.php(76): fputcsv(resource (stream), [...])
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Pages->generateReport()
+ 3 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Pages))
+ 4 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+WARNING - 2025-11-06 15:51:45 --> [DEPRECATED] fputcsv(): the $escape parameter must be provided as its default value will change in APPPATH\Controllers\Pages.php on line 76.
+ 1 APPPATH\Controllers\Pages.php(76): fputcsv(resource (stream), [...])
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Pages->generateReport()
+ 3 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Pages))
+ 4 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+WARNING - 2025-11-06 15:51:45 --> [DEPRECATED] fputcsv(): the $escape parameter must be provided as its default value will change in APPPATH\Controllers\Pages.php on line 76.
+ 1 APPPATH\Controllers\Pages.php(76): fputcsv(resource (stream), [...])
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Pages->generateReport()
+ 3 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Pages))
+ 4 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+WARNING - 2025-11-06 15:51:45 --> [DEPRECATED] fputcsv(): the $escape parameter must be provided as its default value will change in APPPATH\Controllers\Pages.php on line 76.
+ 1 APPPATH\Controllers\Pages.php(76): fputcsv(resource (stream), [...])
+ 2 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Pages->generateReport()
+ 3 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Pages))
+ 4 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ERROR - 2025-11-06 15:52:09 --> mysqli_sql_exception: Unknown column 'address' in 'field list' in C:\xampp\htdocs\V-Track\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\V-Track\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `id`, `a...', 0)
+#1 C:\xampp\htdocs\V-Track\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `id`, `a...')
+#2 C:\xampp\htdocs\V-Track\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `id`, `a...')
+#3 C:\xampp\htdocs\V-Track\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `id`, `a...', Array, false)
+#4 C:\xampp\htdocs\V-Track\app\Controllers\Details.php(36): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(933): App\Controllers\Details->create()
+#6 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Details))
+#7 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\V-Track\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\V-Track\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\V-Track\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+DEBUG - 2025-11-06 15:57:21 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-06 15:57:36 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-06 15:57:37 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-06 15:57:40 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-06 15:57:46 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+ERROR - 2025-11-06 15:57:46 --> Login failed for username: admin
+DEBUG - 2025-11-06 15:57:57 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+ERROR - 2025-11-06 15:57:57 --> Login failed for username: admin
+DEBUG - 2025-11-06 15:58:08 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+ERROR - 2025-11-06 15:58:08 --> Login failed for username: admin
+DEBUG - 2025-11-06 15:58:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+ERROR - 2025-11-06 15:58:15 --> Login failed for username: admin
+DEBUG - 2025-11-06 15:58:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+ERROR - 2025-11-06 15:58:23 --> Login failed for username: admin
+DEBUG - 2025-11-06 15:58:48 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+ERROR - 2025-11-06 15:58:48 --> Login failed for username: admin
+DEBUG - 2025-11-06 15:59:05 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-06 15:59:05 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.

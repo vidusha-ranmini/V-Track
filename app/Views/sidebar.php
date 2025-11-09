@@ -107,6 +107,8 @@
                 <li><a href="#" class="sidebar-link" onclick="loadContent('<?= base_url('add-details') ?>', this);return false;"><span class="sidebar-icon"><i class="fas fa-user-plus"></i></span>Add Details</a></li>
                 <li><a href="#" class="sidebar-link" onclick="loadContent('<?= base_url('view-details') ?>', this);return false;"><span class="sidebar-icon"><i class="fas fa-list"></i></span>View Details</a></li>
                 <li><a href="#" class="sidebar-link" onclick="loadContent('<?= base_url('add-business') ?>', this);return false;"><span class="sidebar-icon"><i class="fas fa-store"></i></span>Add Business</a></li>
+                <li><a href="#" class="sidebar-link" onclick="loadContent('<?= base_url('road-lamps') ?>', this);return false;"><span class="sidebar-icon"><i class="fas fa-lightbulb"></i></span>Road Lamps</a></li>
+                <li><a href="#" class="sidebar-link" onclick="loadContent('<?= base_url('roads-details') ?>', this);return false;"><span class="sidebar-icon"><i class="fas fa-road"></i></span>Roads Details</a></li>
             </ul>
 
             <div class="sidebar-bottom">

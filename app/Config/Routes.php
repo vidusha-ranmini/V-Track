@@ -28,3 +28,9 @@ $routes->post('add-business', 'Business::store');
 $routes->get('business/get/(:num)', 'Business::get/$1');
 $routes->post('business/update', 'Business::update');
 $routes->post('business/delete/(:num)', 'Business::delete/$1');
+// Lamp routes
+$routes->get('road-lamps', 'Lamp::index');
+$routes->post('lamp/toggle/(:num)', 'Lamp::toggleStatus/$1');
+// Roads routes
+$routes->get('roads-details', 'Roads::index');
+$routes->post('roads/toggle/(:num)', 'Roads::toggleDevelopment/$1');
