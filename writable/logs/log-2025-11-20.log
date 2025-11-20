@@ -1,0 +1,86 @@
+DEBUG - 2025-11-20 03:37:14 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2025-11-20 03:37:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+ERROR - 2025-11-20 03:37:20 --> mysqli_sql_exception: Unknown column 'address' in 'field list' in C:\xampp\htdocs\V-Track\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\V-Track\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `id`, `a...', 0)
+#1 C:\xampp\htdocs\V-Track\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `id`, `a...')
+#2 C:\xampp\htdocs\V-Track\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `id`, `a...')
+#3 C:\xampp\htdocs\V-Track\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `id`, `a...', Array, false)
+#4 C:\xampp\htdocs\V-Track\app\Controllers\Details.php(36): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(933): App\Controllers\Details->create()
+#6 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Details))
+#7 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\V-Track\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\V-Track\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\V-Track\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+ERROR - 2025-11-20 03:37:20 --> mysqli_sql_exception: Unknown column 'address' in 'field list' in C:\xampp\htdocs\V-Track\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\V-Track\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `id`, `a...', 0)
+#1 C:\xampp\htdocs\V-Track\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `id`, `a...')
+#2 C:\xampp\htdocs\V-Track\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `id`, `a...')
+#3 C:\xampp\htdocs\V-Track\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `id`, `a...', Array, false)
+#4 C:\xampp\htdocs\V-Track\app\Controllers\Details.php(36): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(933): App\Controllers\Details->create()
+#6 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Details))
+#7 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\V-Track\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\V-Track\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\V-Track\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+ERROR - 2025-11-20 03:37:43 --> mysqli_sql_exception: Unknown column 'address' in 'field list' in C:\xampp\htdocs\V-Track\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\V-Track\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `id`, `a...', 0)
+#1 C:\xampp\htdocs\V-Track\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `id`, `a...')
+#2 C:\xampp\htdocs\V-Track\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `id`, `a...')
+#3 C:\xampp\htdocs\V-Track\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `id`, `a...', Array, false)
+#4 C:\xampp\htdocs\V-Track\app\Controllers\Details.php(36): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(933): App\Controllers\Details->create()
+#6 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Details))
+#7 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\V-Track\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\V-Track\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\V-Track\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+ERROR - 2025-11-20 03:37:43 --> mysqli_sql_exception: Unknown column 'address' in 'field list' in C:\xampp\htdocs\V-Track\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\V-Track\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `id`, `a...', 0)
+#1 C:\xampp\htdocs\V-Track\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `id`, `a...')
+#2 C:\xampp\htdocs\V-Track\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `id`, `a...')
+#3 C:\xampp\htdocs\V-Track\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `id`, `a...', Array, false)
+#4 C:\xampp\htdocs\V-Track\app\Controllers\Details.php(36): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(933): App\Controllers\Details->create()
+#6 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Details))
+#7 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\V-Track\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\V-Track\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\V-Track\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+ERROR - 2025-11-20 03:51:52 --> mysqli_sql_exception: Unknown column 'address' in 'field list' in C:\xampp\htdocs\V-Track\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\V-Track\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `id`, `a...', 0)
+#1 C:\xampp\htdocs\V-Track\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `id`, `a...')
+#2 C:\xampp\htdocs\V-Track\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `id`, `a...')
+#3 C:\xampp\htdocs\V-Track\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `id`, `a...', Array, false)
+#4 C:\xampp\htdocs\V-Track\app\Controllers\Details.php(36): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(933): App\Controllers\Details->create()
+#6 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Details))
+#7 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\V-Track\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\V-Track\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\V-Track\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
+ERROR - 2025-11-20 03:51:52 --> mysqli_sql_exception: Unknown column 'address' in 'field list' in C:\xampp\htdocs\V-Track\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\V-Track\system\Database\MySQLi\Connection.php(327): mysqli->query('SELECT `id`, `a...', 0)
+#1 C:\xampp\htdocs\V-Track\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('SELECT `id`, `a...')
+#2 C:\xampp\htdocs\V-Track\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT `id`, `a...')
+#3 C:\xampp\htdocs\V-Track\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT `id`, `a...', Array, false)
+#4 C:\xampp\htdocs\V-Track\app\Controllers\Details.php(36): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(933): App\Controllers\Details->create()
+#6 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Details))
+#7 C:\xampp\htdocs\V-Track\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\V-Track\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\V-Track\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\V-Track\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 {main}
